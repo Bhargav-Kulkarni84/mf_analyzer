@@ -1,10 +1,12 @@
 import express from 'express';
 import 'dotenv/config';
 import {data} from './getdata.js'
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 
-app.get('/',(req,res)=>{
+app.get('/getData',(req,res)=>{
     res.json(data);
 })
 
