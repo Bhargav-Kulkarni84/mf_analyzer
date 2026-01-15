@@ -1,12 +1,12 @@
 import { Link } from 'react-router';
-import FundImage from '../components/FundImage';
+import FundImage from './FundImage';
 
 export default function FundTitle({ fund, index }) {
   return (
-    <div className="flex flex-col p-4 bg-white rounded-xl shadow-sm hover:shadow-xl transition">
+    <div className="flex flex-col border-5 p-4 bg-white rounded-xl shadow-sm hover:shadow-xl transition">
 
       {/* Image */}
-      <div className="mx-auto">
+      <div className="">
         <FundImage index={index} fundName={fund.fundName} />
       </div>
 
@@ -16,8 +16,9 @@ export default function FundTitle({ fund, index }) {
       </h3>
 
       <Link
-        to="/fundDetail"
-        className="mt-2 text-sm text-blue-600 text-center hover:underline"
+        className="mt-2 text-sm text-blue-600 text-center hover:underline"    
+        to="/fundDetails"
+        state = {{fund : fund}}
       >
         View details →  
       </Link>
