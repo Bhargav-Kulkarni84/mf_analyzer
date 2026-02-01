@@ -1,15 +1,16 @@
-import express from 'express';
-import 'dotenv/config';
-import {data} from './getdata.js'
+import express from "express";
+import 'dotenv/config'
+import getFund from './routes/getFund.js'
 import cors from 'cors';
 
 const app = express();
+
 app.use(cors());
+app.use(express.json());  
+app.use('/fund',getFund);
 
-app.get('/getData',(req,res)=>{
-    res.json(data);
-})
+const PORT = process.env.PORT;
 
-app.listen(process.env.PORT,()=>{
-    console.log(`Listening on PORT ${process.env.PORT}`);
-})
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+});
