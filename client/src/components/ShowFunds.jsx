@@ -1,7 +1,7 @@
 //This Component renders all the funds that are in the database;
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router"
 import axios from 'axios';
+import IndexCard from "./IndexCard";
 
 export default function ShowFunds(){
 
@@ -21,27 +21,13 @@ export default function ShowFunds(){
 
     return(
 
-        <div className="text-blue-600">
+        <div className="grid grid-cols-3">
 
             {
             
             //For each fund give a option to view details of that fund;
-            funds.map((fund)=>(
-                
-                <div key={fund.schemeCode}>
-
-                <div className="text-purple-500">
-                    {fund.schemeName}
-                </div>
-
-                <Link to = {`/fund/${fund.schemeCode}`} >
-                    Go To Fund
-                </Link>
-
-                <Outlet/>
-                
-                </div>
-                
+            funds.map((fund, index)=>(
+                <IndexCard key={index} fund={fund} index={index+1} link={"https://www.fisdom.com/wp-content/uploads/2021/04/shutterstock_458013994-scaled-1.jpg"} />
             ))
             }
 

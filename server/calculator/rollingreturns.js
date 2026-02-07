@@ -19305,7 +19305,7 @@ const fetchFund = {"data": [
     }
   ]}
 
-let fundData = fetchFund.data;
+  let fundData = fetchFund.data;
 
 //Rolling returns years.
 let rollingYear = 2;

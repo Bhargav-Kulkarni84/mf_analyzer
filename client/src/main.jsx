@@ -18,7 +18,10 @@ createRoot(document.getElementById('root')).render(
 
       {/* Fetch the specific details of the fund given the id of the fund */}
       <Route path={"/fund/:id"} element={<FundCard/>}/>
+    
+      <Route path={"/test"} element={<FundCard/>}/>
 
+    
 
 
     </Routes>
