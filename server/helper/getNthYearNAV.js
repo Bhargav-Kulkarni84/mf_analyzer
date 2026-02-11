@@ -2,21 +2,22 @@ import {fetchDate}  from "./fetchDate.js";
 
 function getNav(fundData,fundDate,rollingYear){
 
-    //Extract the required fund year,month and date.
+    //Extract the required year,month and date for the given fund.
     let requiredYear = fundDate.year-rollingYear;
     let requiredMonth = fundDate.month;
     let requiredDate = fundDate.date;
-    
+
     //Iterate through the fund until we find the date equal to the required date.
     for(let i=0; i<fundData.length; i++){
         
         //Get the date,month,year of the required fund.
-        const {date,month,year} = fetchDate(fundData[i]);
-
+        const {date,month,year} = fetchDate(fundData[i]);   
+        
         //Compare the current year and month with the required year and month.
         if(year === requiredYear && month === requiredMonth){
 
-            //Check if we can get the exact date and use it's nav otherwise take the previous date;
+            //Check if we can get the exact date and use it's nav 
+            // otherwise take the previous date;
             if(date === requiredDate || date< requiredDate ){
                 
                 //Return the nav of current fund.
@@ -26,9 +27,14 @@ function getNav(fundData,fundDate,rollingYear){
                 // console.log(`Current Fund Nav: ${fund.nav} \nNew Fund Nav : ${fundData[i].nav}\n`);
 
             }
+
         }
+
+        //Keep track of the fund index as we might not find the corresponding date in the fund.
+        // index++;
         
     }
+
 
     //Return -1 when all the rolling returns corresponding to the fund are covered and we don't have previous year data.
     return -1;

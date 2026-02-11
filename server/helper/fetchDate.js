@@ -4,7 +4,7 @@ function fetchDate(fundObj){
     // console.log(`Complete Date = ${fundDate}`)
     
     "------------------------------------------------------------------------------------------"
-    //Get the date is unit digit, i will store the single digit not the two digit.
+    //If the date is unit digit, i will store the single digit not the two digit.
     let date = JSON.parse(fundDate.slice(0,1)); 
     
     if(date === 0){

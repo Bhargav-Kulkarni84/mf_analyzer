@@ -5,6 +5,7 @@ import App from './App.jsx'
 
 import ShowFunds from './components/ShowFunds.jsx'
 import FundCard from './components/FundCard.jsx'
+import GetRollingReturn from './components/GetRollingReturn.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -16,17 +17,12 @@ createRoot(document.getElementById('root')).render(
       {/* fund routes */}
       <Route path="/fund" element={<ShowFunds/>}/>
 
+      <Route path={"/rolling"} element={<GetRollingReturn/>}/>
+      
       {/* Fetch the specific details of the fund given the id of the fund */}
       <Route path={"/fund/:id"} element={<FundCard/>}/>
     
-      <Route path={"/test"} element={<FundCard/>}/>
-
-    
-
 
     </Routes>
-
- 
-
   </BrowserRouter>
 )

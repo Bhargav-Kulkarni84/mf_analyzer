@@ -1,7 +1,7 @@
 import { Link } from "react-router"
 import FundImage from "./FundImage"
 
-export default function IndexCard({fund,index, link}){
+export default function IndexCard({fund,index,link}){
 
     return(
 

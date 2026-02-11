@@ -1,29 +1,32 @@
 import express from 'express'
 import axios from 'axios'
 import fs from 'fs/promises';
-
+import { getRollingReturns } from '../calculator/rollingreturns.js';
 
 const router = express.Router();
 
+//Show all the funds.
 router.get('/',async(req,res)=>{
 
-  let funds = await fs.readFile('./routes/funds.txt')
-  funds = JSON.parse(funds);
-  res.json({fund : funds});
-  
+  // let funds = await fs.readFile('./routes/funds.txt')
+  // fundData = JSON.parse(funds);
+  // res.json(fundData);
+
+  //Get all the funds from API
+   
+  let fund = await axios.get('https://api.mfapi.in/mf');
+  //Send the Response as JSON.
+  const fundData = fund.data;
+  res.json(fundData);
+
 })
 
-//Show all the funds.
+router.get('/rolling',async(req,res)=>{
 
-router.get('/',async(req,res)=>{
-
-  //Get all the funds from API.
-  let funds = await fs.readFile('./routes/funds.txt')
-  funds = JSON.parse(funds);
-
-  //Send the Response as JSON.
-  res.json(funds);
-
+  const {fundID,rollingYear} = req.query;
+  const rollingReturnObj = await getRollingReturns(fundID,rollingYear);
+  res.json(rollingReturnObj);
+  
 })
 
 //Get a specific fund from the funds list.
@@ -40,41 +43,5 @@ router.get('/:id',async(req,res)=>{
 
 })
 
-router.post('/fundname',async(req,res)=>{
-
-  //Get the fund name.
-  const fundName = req.body.fundName;
-
-  //Get the fund from file or api.
-  // let funds = await axios.get('https://api.mfapi.in/mf');
-  // funds = funds.data;
-
-  //Read file containing all funds.
-  let funds = await fs.readFile('./routes/funds.txt')
-  funds = JSON.parse(funds);
-
-  //Search for the fundName entered by user in given funds.
-  
-  let fundObj = {};
-
-  funds.forEach(fund => {
-      let name = fund.schemeName;
-
-      if(name === fundName){
-        //Add the fund name and fund code.
-      
-        fundObj = {name:fund.schemeName, code:fund.schemeCode};
-     
-      }
-
-  });
-
-  if(fundObj === null){
-    return res.send("Invalid Fund Name Please Enter Again");
-  }
-
-  return  res.json(fundObj);
-
-})
 
 export default router;

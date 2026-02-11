@@ -12,7 +12,8 @@ export default function ShowFunds(){
 
         const fetchFunds= async() =>{
             const response = await axios.get('http://localhost:3000/fund');
-            setFunds(response.data.fund);
+            console.log(response.data);
+            setFunds(response.data);
         }
 
         fetchFunds();
@@ -21,17 +22,14 @@ export default function ShowFunds(){
 
     return(
 
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-5">
 
             {
-            
-            //For each fund give a option to view details of that fund;
-            funds.map((fund, index)=>(
-                <IndexCard key={index} fund={fund} index={index+1} link={"https://www.fisdom.com/wp-content/uploads/2021/04/shutterstock_458013994-scaled-1.jpg"} />
-            ))
+                //For each fund give a option to view details of that fund;
+                funds.map((fund, index)=>(
+                    <IndexCard key={index} fund={fund} index={index+1} link={"https://www.fisdom.com/wp-content/uploads/2021/04/shutterstock_458013994-scaled-1.jpg"} />
+                ))
             }
-
-            
 
         </div>
 

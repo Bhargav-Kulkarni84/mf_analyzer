@@ -1,6 +1,10 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
-function FundCard(fund){
+function FundCard(){
+
+    //Since we are navigating through the link, we need to pass the prop using location.
+    const location = useLocation();
+    let fund = location.state.fund
 
     return(
 
@@ -26,7 +30,18 @@ function FundCard(fund){
 
             {/* View Fund Analystics */}
             <div className="flex flex-col gap-6 items-start ">
-                <button className="text-blue-600">View Rolling Returns</button>
+
+                <div className="flex flex-col gap-6 text-center">
+                    <div>View Rolling Returns</div>
+                    <div className="flex flex-row text-black gap-2">
+                        <Link to="/rolling" state={{fund:fund,year:1}} className="p-2 border-2">1 year</Link>
+                        <Link to="/rolling" state={{fund:fund,year:3}} className="p-2 border-2">3 years</Link>
+                        <Link to="/rolling" state={{fund:fund,year:5}} className="p-2 border-2">5 years</Link>
+                        <Link to="/rolling" state={{fund:fund,year:7}} className="p-2 border-2">7 years</Link>
+                        <Link to="/rolling" state={{fund:fund,year:10}} className="p-2 border-2">10 years</Link>
+                    </div>
+                </div>
+
                 <button className="text-blue-600">View Key Ratios</button>
                 <button className="text-blue-600">View Capture Ratios</button>
                 <button className="text-blue-600">View All</button>
@@ -34,7 +49,6 @@ function FundCard(fund){
 
 
         </div>
-
 
 
     )
