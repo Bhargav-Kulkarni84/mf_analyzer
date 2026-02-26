@@ -7,6 +7,8 @@ function getNav(fundData,fundDate,rollingYear){
     let requiredMonth = fundDate.month;
     let requiredDate = fundDate.date;
 
+    if(requiredYear<0) return NaN;
+
     //Iterate through the fund until we find the date equal to the required date.
     for(let i=0; i<fundData.length; i++){
         
@@ -29,17 +31,16 @@ function getNav(fundData,fundDate,rollingYear){
             }
 
         }
-
-        //Keep track of the fund index as we might not find the corresponding date in the fund.
-        // index++;
         
     }
 
 
     //Return -1 when all the rolling returns corresponding to the fund are covered and we don't have previous year data.
-    return -1;
+    return NaN;
 
 }
 
 export {getNav};
+
+
 

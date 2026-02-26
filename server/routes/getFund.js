@@ -1,7 +1,8 @@
-import express from 'express'
-import axios from 'axios'
+import express from 'express';
+import axios from 'axios';
 import fs from 'fs/promises';
 import { getRollingReturns } from '../calculator/rollingreturns.js';
+import {processFunds} from '../helper/processFunds.js';
 
 const router = express.Router();
 
@@ -17,7 +18,13 @@ router.get('/',async(req,res)=>{
   let fund = await axios.get('https://api.mfapi.in/mf');
   //Send the Response as JSON.
   const fundData = fund.data;
-  res.json(fundData);
+  const processedFunds = processFunds(fundData);
+
+  //Write the data to the file.
+  await fs.writeFile('./routes/processedFunds.json',JSON.stringify(processedFunds,null,2),'utf8');
+
+
+  res.json(processedFunds);
 
 })
 

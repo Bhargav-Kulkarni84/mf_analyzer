@@ -7,22 +7,21 @@ import fs from 'fs/promises'
 async function getRollingReturns(fundID,rollingYear){
 
     //Fetch the NAV of requested fund
-    // const fetchFund= await axios.get(`https://api.mfapi.in/mf/${fundID}`);
-    // let fundData = fetchFund.data.data;
+    const fetchFund= await axios.get(`https://api.mfapi.in/mf/${fundID}`);
+    let fundData = fetchFund.data.data;
 
-    const fetchFund = await fs.readFile('./routes/nav.txt')
-    let fundData = JSON.parse(fetchFund);
-    fundData = fundData.data;
+    // const fetchFund = await fs.readFile('./routes/nav.txt')
+    // let fundData = JSON.parse(fetchFund);
+    // fundData = fundData.data;
 
     //Count the number of funds available for computing rolling returns.
     let fundCount = 0;
 
     //Variable to store the total,min and max CAGR.
     let rollingCAGR = 0;
-    let maxCAGR = Number.MIN_SAFE_INTEGER;
-    let minCAGR = Number.MAX_SAFE_INTEGER;
+    let maxCAGR = -Infinity;
+    let minCAGR = Infinity;
 
- 
     //Get rolling return for each value of fund.
     for(let i=0; i<fundData.length; i++){
         
@@ -35,7 +34,7 @@ async function getRollingReturns(fundID,rollingYear){
         let currNav = fund.nav;
         let newNav = getNav(fundData,fundDate,rollingYear);
 
-        if(newNav === -1) break;
+        if(Number.isNaN(newNav)) continue;
 
         //Compute the CAGR n years.
         let currCAGR = getCAGR(currNav,newNav,rollingYear); 
@@ -52,13 +51,17 @@ async function getRollingReturns(fundID,rollingYear){
         
     };
 
+    if (fundCount === 0) {
+        return { avg: null, max: null, min: null };
+    }
+
     const avgRollingCAGR = rollingCAGR/fundCount;
 
-    console.log(`${rollingYear} Year Avg Rolling Returns = ${avgRollingCAGR}`);
-    console.log(`${rollingYear} Year Min Rolling Returns = ${minCAGR}`);
-    console.log(`${rollingYear} Year Max Rolling Returns = ${maxCAGR}`);
+    // console.log(`${rollingYear} Year Avg Rolling Returns = ${avgRollingCAGR}`);
+    // console.log(`${rollingYear} Year Min Rolling Returns = ${minCAGR}`);
+    // console.log(`${rollingYear} Year Max Rolling Returns = ${maxCAGR}`);
 
-    const rollingReturnObj = {avg:avgRollingCAGR,max:maxCAGR,min:minCAGR};
+    const rollingReturnObj = {avg:avgRollingCAGR,max:maxCAGR,min:minCAGR,fundCount:fundCount};
 
     return rollingReturnObj;
 
