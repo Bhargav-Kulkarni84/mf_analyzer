@@ -1,14 +1,20 @@
 import axios from 'axios';
-import { fetchDate } from '../helper/fetchDate.js';
+import { fetchDate } from '../helper/01.fetchDate.js';
 import { getNav } from '../helper/getNthYearNAV.js';
-import {getCAGR} from '../helper/getCAGR.js'
-import fs from 'fs/promises'
+import {getCAGR} from '../helper/getCAGR.js';
+
+//DB 
+import {pool} from '../db/01.createPool.js';
+import {nav_selection_query} from '../db_queries/1.nav_selection.js' 
 
 async function getRollingReturns(fundID,rollingYear){
 
-    //Fetch the NAV of requested fund
-    const fetchFund= await axios.get(`https://api.mfapi.in/mf/${fundID}`);
-    let fundData = fetchFund.data.data;
+    //Using MF API
+    //const fetchFund= await axios.get(`https://api.mfapi.in/mf/${fundID}`);
+    //Fetch the NAV of requested fund from the database.
+
+    const navResult = await pool.query(nav_selection_query,[fundID]);
+    let fundData = navResult.rows.data;
 
     // const fetchFund = await fs.readFile('./routes/nav.txt')
     // let fundData = JSON.parse(fetchFund);

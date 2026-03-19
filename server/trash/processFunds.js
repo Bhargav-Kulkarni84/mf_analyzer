@@ -1,7 +1,5 @@
 //This will be single truth of fund, fund object will be created here.
-
 import { fetchDate } from "./fetchDate.js";
-import axios from 'axios';
 
 //This function 
 // 1. Filters all the outdated funds.

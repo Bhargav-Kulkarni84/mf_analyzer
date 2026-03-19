@@ -2,29 +2,26 @@ import express from 'express';
 import axios from 'axios';
 import fs from 'fs/promises';
 import { getRollingReturns } from '../calculator/rollingreturns.js';
-import {processFunds} from '../helper/processFunds.js';
 
 const router = express.Router();
 
 //Show all the funds.
 router.get('/',async(req,res)=>{
 
-  // let funds = await fs.readFile('./routes/funds.txt')
-  // fundData = JSON.parse(funds);
-  // res.json(fundData);
+  let funds = await fs.readFile('./routes/funds.txt')
+  const fundData = JSON.parse(funds);
+  res.json(fundData);
 
   //Get all the funds from API
    
-  let fund = await axios.get('https://api.mfapi.in/mf');
-  //Send the Response as JSON.
-  const fundData = fund.data;
-  const processedFunds = processFunds(fundData);
+  // let fund = await axios.get('https://api.mfapi.in/mf');
+  // //Send the Response as JSON.
+  // const fundData = fund.data;
+  // const processedFunds = processFunds(fundData);
 
-  //Write the data to the file.
-  await fs.writeFile('./routes/processedFunds.json',JSON.stringify(processedFunds,null,2),'utf8');
-
-
-  res.json(processedFunds);
+  // //Write the data to the file.
+  // await fs.writeFile('./routes/processedFunds.json',JSON.stringify(processedFunds,null,2),'utf8');
+  // res.json(processedFunds);
 
 })
 

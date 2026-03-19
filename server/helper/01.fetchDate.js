@@ -1,3 +1,5 @@
+//Returns date in dd mm yyyy
+
 function fetchDate(fundObj){
     
     let fundDate = fundObj.date;
