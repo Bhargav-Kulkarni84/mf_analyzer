@@ -2,7 +2,7 @@
 
 function fetchDate(fundObj){
     
-    let fundDate = fundObj.date;
+    let fundDate = fundObj.nav_date;
     // console.log(`Complete Date = ${fundDate}`)
     
     "------------------------------------------------------------------------------------------"

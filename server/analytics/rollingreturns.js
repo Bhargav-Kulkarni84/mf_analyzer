@@ -1,24 +1,21 @@
-import axios from 'axios';
 import { fetchDate } from '../helper/01.fetchDate.js';
-import { getNav } from '../helper/getNthYearNAV.js';
+import { getNav } from '../helper/03.getNthYearNAV.js';
 import {getCAGR} from '../helper/getCAGR.js';
 
 //DB 
 import {pool} from '../db/01.createPool.js';
-import {nav_selection_query} from '../db_queries/1.nav_selection.js' 
+import {nav_selection_query} from '../db_queries/01.nav_selection.js' 
+import {getFundId} from '../helper/00.getFundId.js'
 
-async function getRollingReturns(fundID,rollingYear){
+async function getRollingReturns(scheme_code,rollingYear){
 
-    //Using MF API
-    //const fetchFund= await axios.get(`https://api.mfapi.in/mf/${fundID}`);
     //Fetch the NAV of requested fund from the database.
 
-    const navResult = await pool.query(nav_selection_query,[fundID]);
-    let fundData = navResult.rows.data;
+    //Fetch the fund id cooresponding to the scheme code;
+    const fundID = await getFundId(scheme_code);
 
-    // const fetchFund = await fs.readFile('./routes/nav.txt')
-    // let fundData = JSON.parse(fetchFund);
-    // fundData = fundData.data;
+    const navResult = await pool.query(nav_selection_query(),[fundID]);
+    let fundData = navResult.rows;
 
     //Count the number of funds available for computing rolling returns.
     let fundCount = 0;
@@ -33,7 +30,7 @@ async function getRollingReturns(fundID,rollingYear){
         
         const fund = fundData[i];
 
-        //Get the data,month,year of the current fund.
+        //Get the date,month,year of the current fund.
         const fundDate = fetchDate(fund);
 
         //Variable to store the current fund nav and corresponding rolling fund nav.
