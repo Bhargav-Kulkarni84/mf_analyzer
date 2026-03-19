@@ -9,6 +9,11 @@ function nav_selection_query(){
         ORDER BY nav_date DESC
         ;
     `
+
+    return query;
 }
 
 export {nav_selection_query};
+
+
+        
