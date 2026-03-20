@@ -7,7 +7,7 @@ async function getFundId(scheme_code){
     
     const result = await pool.query(scheme_code_to_id_query(),[scheme_code]) ;
 
-    console.log("Result : " +result.rows);
+    // console.log("Fund ID = "+result.rows[0]?.id +"\nfor scheme_code = "+scheme_code);
 
     return result.rows[0]?.id;
 
