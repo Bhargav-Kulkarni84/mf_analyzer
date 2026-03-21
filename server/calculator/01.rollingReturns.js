@@ -1,10 +1,9 @@
-import { getNav } from '../helper/01.getNav.js';
-import {getCAGR} from '../helper/02.getCAGR.js';
+import { getNav } from '../helper/02.getNav.js';
+import {getCAGR} from '../helper/03.getCAGR.js';
 
 //DB 
-import {pool} from '../db/01.createPool.js';
-import {nav_selection_query} from '../db_queries/01.nav_selection.js' 
 import {getFundId} from '../helper/00.getFundId.js'
+import { getNavHistory } from '../helper/01.getNavHistory.js';
 
 async function getRollingReturns(scheme_code,rollingYear){
 
@@ -12,9 +11,8 @@ async function getRollingReturns(scheme_code,rollingYear){
     const fundID = await getFundId(scheme_code);
 
     //Fetch the NAV history of requested fund from the database.
-    const navResult = await pool.query(nav_selection_query(),[fundID]);
-    let navHistory = navResult.rows;
 
+    let navHistory = await getNavHistory(fundID);
     // console.log("Nav Logs = "+navHistory.length);
 
     //Count the number of funds available for computing rolling returns.
@@ -76,9 +74,9 @@ async function getRollingReturns(scheme_code,rollingYear){
 
     const avgRollingCAGR = rollingCAGR/fundCount;
 
-    console.log(`${rollingYear} Year Avg Rolling Returns = ${avgRollingCAGR.toFixed(2)} %`);
-    console.log(`${rollingYear} Year Min Rolling Returns = ${minCAGR.toFixed(2)} %`);
-    console.log(`${rollingYear} Year Max Rolling Returns = ${maxCAGR.toFixed(2)} %`);
+    // console.log(`${rollingYear} Year Avg Rolling Returns = ${avgRollingCAGR.toFixed(2)} %`);
+    // console.log(`${rollingYear} Year Min Rolling Returns = ${minCAGR.toFixed(2)} %`);
+    // console.log(`${rollingYear} Year Max Rolling Returns = ${maxCAGR.toFixed(2)} %`);
 
     const rollingReturnObj = {avg:avgRollingCAGR,max:maxCAGR,min:minCAGR,fundCount:fundCount};
 
