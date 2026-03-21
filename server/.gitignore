@@ -1,0 +1,10 @@
+node_modules
+.env
+
+# Ignore test files
+calculator/test.js
+db/test.js
+helper/test.js
+
+# Ignore trash folder
+trash/
