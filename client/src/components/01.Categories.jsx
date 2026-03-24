@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Link } from "react-router";
 
 function Categories() {
@@ -16,9 +15,16 @@ function Categories() {
       {/* Fund category screen */}
       <div className="text-lg">Select Fund Category</div>
 
-    {/* Gives option to select fund category */}
+    {/* Display All Funds From the database */}
+      <Link to={`/fund`}>
+          <div className="p-6 text-lg font-semibold rounded-xl shadow-sm transition duration-150 
+                              hover:cursor-pointer hover:bg-green-100 hover:text-green-600 hover:scale-105">
+                    Select All
+          </div> 
+      </Link>
     
 
+    {/* Gives option to select fund category */}
       <div className="grid grid-cols-1 gap-6">
       {
         ["Equity","Debt","Hybrid","Solution Oriented","Others"] .map((category,index)=>(

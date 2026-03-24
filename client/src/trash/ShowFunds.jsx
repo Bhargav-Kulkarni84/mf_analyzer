@@ -1,7 +1,7 @@
-// This Component renders all the funds that are in the database
+// This Component renders all the funds that are present in the database (around 37k)
 import { useEffect, useState } from "react";
 import axios from "axios";
-import IndexCard from "../components/IndexCard";
+import IndexCard from "./IndexCard";
 
 export default function ShowFunds() {
   const [funds, setFunds] = useState([]);
