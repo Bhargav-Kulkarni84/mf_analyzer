@@ -10,7 +10,7 @@ async function getFundId(scheme_code){
             WHERE scheme_code = $1`
         ,[scheme_code]) ;
 
-    console.log("Fund ID = "+result.rows[0]?.id +"\nfor scheme_code = "+scheme_code);
+    // console.log("Fund ID = "+result.rows[0]?.id +"\nfor scheme_code = "+scheme_code);
 
     return result.rows[0]?.id;
 

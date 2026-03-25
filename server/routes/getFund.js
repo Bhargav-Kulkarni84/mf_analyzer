@@ -1,30 +1,23 @@
 import express from 'express';
-import axios from 'axios';
-import fs from 'fs/promises';
-import { getRollingReturns } from '../calculator/rollingreturns.js';
+import { getRollingReturns } from '../calculator/01.rollingReturns.js';
+
+//DB
+import {pool} from '../db/01.createPool.js'
 
 const router = express.Router();
 
 //Show all the funds.
-router.get('/',async(req,res)=>{
+router.get('/', async (req, res) => {
+  try {
+    const fetchFunds = await pool.query(`SELECT * FROM funds LIMIT 500`);
+    res.json(fetchFunds.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
+});
 
-  let funds = await fs.readFile('./routes/funds.txt')
-  const fundData = JSON.parse(funds);
-  res.json(fundData);
-
-  //Get all the funds from API
-   
-  // let fund = await axios.get('https://api.mfapi.in/mf');
-  // //Send the Response as JSON.
-  // const fundData = fund.data;
-  // const processedFunds = processFunds(fundData);
-
-  // //Write the data to the file.
-  // await fs.writeFile('./routes/processedFunds.json',JSON.stringify(processedFunds,null,2),'utf8');
-  // res.json(processedFunds);
-
-})
-
+//Find rolling return of a specific fund.
 router.get('/rolling',async(req,res)=>{
 
   const {fundID,rollingYear} = req.query;
@@ -37,13 +30,13 @@ router.get('/rolling',async(req,res)=>{
 router.get('/:id',async(req,res)=>{
 
   //Extract the fund code from the request parameters.
-  const fundCode = req.params.id;
-  console.log("Fund Code = "+fundCode);
+  const schemeCode = req.params.id;
+  // console.log("Scheme Code = "+schemeCode);
 
-  //Make an api request to get the fund details from mf api.
-  const response = await axios.get(`https://api.mfapi.in/mf/${fundCode}`);
-  const fundDetails = response.data;
-  res.json(fundDetails);
+  //Make fetch the fund from the db.
+  const fetchFund = await pool.query(`SELECT * FROM funds WHERE scheme_code = $1`,[schemeCode]);
+  const fund = fetchFund.rows;
+  res.json(fund);
 
 })
 
