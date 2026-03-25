@@ -7,16 +7,15 @@ import {pool} from '../db/01.createPool.js'
 const router = express.Router();
 
 //Show all the funds.
-router.get('/',async(req,res)=>{
-
-  //Fetch all funds from DB;
-  // let funds = await fs.readFile('./routes/funds.txt')
-
-  const fetchFunds = await pool.query(`SELECT * FROM funds LIMIT 500`);
-  const funds = fetchFunds.rows;
-  res.json(funds);
-
-})
+router.get('/', async (req, res) => {
+  try {
+    const fetchFunds = await pool.query(`SELECT * FROM funds LIMIT 500`);
+    res.json(fetchFunds.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
+});
 
 //Find rolling return of a specific fund.
 router.get('/rolling',async(req,res)=>{

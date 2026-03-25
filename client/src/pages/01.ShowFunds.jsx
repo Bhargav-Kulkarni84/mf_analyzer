@@ -3,6 +3,11 @@
 import axios from 'axios';
 import {useState,useEffect} from 'react';
 
+//PUBLIC URL
+// const PUBLIC_URL = process.env.PUBLIC_URL;
+const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL;
+console.log("API URL:", PUBLIC_URL);
+
 import FundCard from '../components/03.FundCard.jsx'
 
 export default function ShowFunds(){
@@ -15,7 +20,9 @@ export default function ShowFunds(){
         const fetchFunds = async () => {
 
             try {
-                const response = await axios.get("http://localhost:3000/fund");
+                const response = await axios.get(`${PUBLIC_URL}/fund`, {
+                headers: {"ngrok-skip-browser-warning": "true"}
+                });
                 setFunds(response.data);
             } 
             catch (error) {
