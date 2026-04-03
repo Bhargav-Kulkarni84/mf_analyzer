@@ -1,17 +1,17 @@
 import express from "express";
 import 'dotenv/config'
-import getFund from './routes/getFund.js'
+import getFund from './routes/01.getFund.js'
+import authRoutes from './routes/02.authRoutes.js'
+
 import cors from 'cors';
 
 const app = express();
 
-// app.use(cors({
-//   origin: '*',
-// }));
 app.use(cors());
 
 app.use(express.json());
 
+app.use('/', authRoutes);
 app.use('/fund', getFund);
 
 const PORT = process.env.PORT || 3000;
