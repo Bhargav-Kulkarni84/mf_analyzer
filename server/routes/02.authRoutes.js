@@ -1,0 +1,54 @@
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import {pool} from '../db/01.createPool.js'
+import { generateHashedPassword } from './auth_helpers/01.hashedPassword.js';
+
+const app = express();
+app.use(express.json());
+
+const router = express.Router();
+
+//Handling the post request for authentication.
+
+// router.post("/login", async(req,res,next) =>{
+
+//         //Extract the email and password from the FORM body.
+//         let {email, password} = req.body();
+        
+//         const existingUser = await pool.query(`SELECT id username FROM users WHERE email=$1`,[email]);
+
+//         //If user not found return user not found error.
+//         if(existingUser.rows[0] == null){
+//             return res.json({ message: "User Not Found, Please Enter Valid Credentials" });
+//         }
+
+//         //If user found check for password.
+
+
+
+
+
+//     }
+// )
+
+//Signup Login for existing users.
+
+router.post("/signup",async(req,res,next)=>{
+
+    //Extract the email and password from the FORM body.
+    let {username,email,password} = req.body;
+    
+    //Check if the user with current credentials already exists.
+    const existingUser = await pool.query(`SELECT * FROM users WHERE username=$1 OR email=$2`,[username,email]);
+    if(existingUser.rows[0] != null) return res.json({ message: `User with ${username} already exists, Please try a different username` });
+
+    //If not save the new user to database.
+    const hashedPassword = await generateHashedPassword(password);
+
+    await pool.query(`INSERT INTO users (username,email,password_hash) VALUES ($1,$2,$3)`,[username,email,hashedPassword]);
+
+    res.json({message:"User Added Succesfully"});
+
+})
+
+export default router;
