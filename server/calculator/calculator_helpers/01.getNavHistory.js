@@ -1,6 +1,6 @@
 //Returns the nav history of a fund provided its fund id
 
-import {pool} from '../db/01.createPool.js';
+import {pool} from '../../db/01.createPool.js';
 
 async function getNavHistory(fundID){
 

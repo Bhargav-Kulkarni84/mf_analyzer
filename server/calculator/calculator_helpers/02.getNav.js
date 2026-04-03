@@ -1,4 +1,4 @@
-import {pool} from '../db/01.createPool.js'
+import {pool} from '../../db/01.createPool.js'
 
 async function getNav(fundID,navDate,rollingYear){
 

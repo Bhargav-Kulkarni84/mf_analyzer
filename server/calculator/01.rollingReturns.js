@@ -1,9 +1,9 @@
-import { getNav } from '../helper/02.getNav.js';
-import {getCAGR} from '../helper/03.getCAGR.js';
+import { getNav } from './calculator_helpers/02.getNav.js';
+import {getCAGR} from './calculator_helpers/03.getCAGR.js';
 
 //DB 
-import {getFundId} from '../helper/00.getFundId.js'
-import { getNavHistory } from '../helper/01.getNavHistory.js';
+import {getFundId} from './calculator_helpers/00.getFundId.js'
+import { getNavHistory } from './calculator_helpers/01.getNavHistory.js';
 
 async function getRollingReturns(scheme_code,rollingYear){
 
