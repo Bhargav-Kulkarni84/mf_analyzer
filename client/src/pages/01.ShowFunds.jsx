@@ -20,9 +20,10 @@ export default function ShowFunds(){
         const fetchFunds = async () => {
 
             try {
-                const response = await axios.get(`${PUBLIC_URL}/fund`, {
-                headers: {"ngrok-skip-browser-warning": "true"}
-                });
+                const response = await axios.get(`${PUBLIC_URL}/fund`, 
+                {headers: {"ngrok-skip-browser-warning": "true"}},
+                { withCredentials: true }
+            );
                 setFunds(response.data);
             } 
             catch (error) {

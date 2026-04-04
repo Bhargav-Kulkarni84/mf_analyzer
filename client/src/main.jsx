@@ -8,6 +8,8 @@ import SubCategories from './components/02.SubCategories.jsx'
 import ShowFunds from './pages/01.ShowFunds.jsx'
 import FundDetails from './components/04.FundDetails.jsx';
 
+//Auth Routes.
+
 createRoot(document.getElementById('root')).render(
   
   <BrowserRouter>
@@ -29,6 +31,8 @@ createRoot(document.getElementById('root')).render(
 
       {/* Fetch the sub category from the category selected */}
       <Route path={"/:category"} element={<SubCategories/>}/>
+
+      
 
     </Routes>
   </BrowserRouter>
