@@ -4,10 +4,13 @@ import { getRollingReturns } from '../calculator/01.rollingReturns.js';
 //DB
 import {pool} from '../db/01.createPool.js'
 
+//Middleware
+import {authMiddleware} from '../middlewares/01.authMiddleware.js'
+
 const router = express.Router();
 
 //Show all the funds.
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
     const fetchFunds = await pool.query(`SELECT * FROM funds LIMIT 500`);
     res.json(fetchFunds.rows);
@@ -18,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 //Find rolling return of a specific fund.
-router.get('/rolling',async(req,res)=>{
+router.get('/rolling',authMiddleware,async(req,res)=>{
 
   const {fundID,rollingYear} = req.query;
   const rollingReturnObj = await getRollingReturns(fundID,rollingYear);
@@ -27,7 +30,7 @@ router.get('/rolling',async(req,res)=>{
 })
 
 //Get a specific fund from the funds list.
-router.get('/:id',async(req,res)=>{
+router.get('/:id',authMiddleware,async(req,res)=>{
 
   //Extract the fund code from the request parameters.
   const schemeCode = req.params.id;

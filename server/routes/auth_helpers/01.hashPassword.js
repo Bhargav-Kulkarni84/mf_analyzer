@@ -6,12 +6,9 @@ const saltRounds = Number(process.env.SALT_ROUNDS);
 async function generateHashedPassword(password){
 
     const hash = await bcrypt.hash(password,saltRounds);
+    console.log("Hash",hash);
     return hash;
 
 }
 
 export {generateHashedPassword}
-
-// console.log("Generated Hash")
-const hashedPassword = await generateHashedPassword("Bhargav")
-// console.log(hashedPassword);
