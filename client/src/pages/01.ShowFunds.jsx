@@ -19,11 +19,16 @@ export default function ShowFunds(){
 
         const fetchFunds = async () => {
 
+            const token = localStorage.getItem('token');
+
             try {
-                const response = await axios.get(`${PUBLIC_URL}/fund`, 
-                {headers: {"ngrok-skip-browser-warning": "true"}},
-                { withCredentials: true }
-            );
+                const response = await axios.get(`${PUBLIC_URL}/fund`, {
+                headers: {
+                        "ngrok-skip-browser-warning": "true",
+                        Authorization : `Bearer ${token}`
+                    }
+                });
+                
                 setFunds(response.data);
             } 
             catch (error) {

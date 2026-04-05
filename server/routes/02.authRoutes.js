@@ -22,22 +22,21 @@ router.post("/login", async(req,res,next) =>{
 
         //If user not found return user not found error.
         if(existingUser.rows[0] == null){
-            return res.json({ message: "User Not Found, Please Enter Valid Credentials" });
+            return res.status(404).json({ message: "User Not Found, Please Enter Valid Credentials" });
         }
 
         const {id,password_hash} = existingUser.rows[0];
 
         //If user found check for password validity.
-        const isValidPassword = validatePassword(password,password_hash);
+        const isValidPassword = await validatePassword(password,password_hash);
 
         if(isValidPassword){
             //Generate a token and send it to user.
             const token = jwt.sign({id:id,username:username},process.env.JWT_SECRET);
-            res.cookie('authToken',token);
-            res.json({"token":token});
+            return res.json({"token":token});
         }
 
-        res.json("message : Some Error Occured");
+        return res.status(401).json({ message: "Invalid password" });
 
     }
 )

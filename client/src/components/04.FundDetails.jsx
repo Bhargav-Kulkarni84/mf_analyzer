@@ -34,9 +34,15 @@ export default function FundDetails() {
         if (!schemeCode) return;
 
         const fetchData = async () => {
+
+            const token = localStorage.getItem('token');
+
             try {
                 const fundRes = await axios.get(`${PUBLIC_URL}/fund/${schemeCode}`,{
-                    headers: {"ngrok-skip-browser-warning": "true"}
+                    headers: {
+                        "ngrok-skip-browser-warning": "true",
+                        Authorization : `Bearer ${token}`
+                    }
                 });
                 setFundInfo(fundRes.data[0] || null);
 
