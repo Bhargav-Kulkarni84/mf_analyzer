@@ -18,11 +18,15 @@ createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
 
+
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
 
 
       {/* fund routes */}
+
+      <Route path="/" element={<ProtectedRoute> <App /> </ProtectedRoute>}/>
+      
       <Route path="/home" element={<ProtectedRoute> <App /> </ProtectedRoute>}/>
 
       <Route path="/fund" element={<ProtectedRoute> <ShowFunds/> </ProtectedRoute>}/>
