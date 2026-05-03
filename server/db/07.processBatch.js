@@ -1,8 +1,8 @@
-import { addFundDetails } from "./04.addFundDetails.js";
+import { createBatch } from "./06.createBatch.js";
 
 async function run() {
   console.log("Starting data pipeline...");
-  await addFundDetails();
+  await createBatch();
   console.log("Data pipeline completed");
 }
 

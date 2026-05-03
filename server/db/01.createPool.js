@@ -1,7 +1,7 @@
+//This file opens pool of TCP connections from db to postgres server.
+
 import {Pool} from 'pg';
 import 'dotenv/config';
-
-//This file opens pool of TCP connections from db to postgres server.
 
 const pool = new Pool({
   user: process.env.DB_USER,
