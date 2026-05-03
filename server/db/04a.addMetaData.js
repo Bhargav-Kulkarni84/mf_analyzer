@@ -1,3 +1,6 @@
+//This function receives a meta data from fund it then 
+//finds the fund in db and then adds the meta data to it.
+
 import {pool} from '../db/01.createPool.js';
 
 async function addMetaData(metaData){

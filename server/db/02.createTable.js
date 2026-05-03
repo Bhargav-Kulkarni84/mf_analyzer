@@ -1,3 +1,4 @@
+//Using the connection pool created earlier, this file creates 4 tables inside the mfddb database.
 import { pool } from "./01.createDB.js";
 
 async function createTable(){

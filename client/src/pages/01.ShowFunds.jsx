@@ -1,10 +1,8 @@
 //Select All the funds from the database.
-
 import axios from 'axios';
 import {useState,useEffect} from 'react';
 
 //PUBLIC URL
-// const PUBLIC_URL = process.env.PUBLIC_URL;
 const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL;
 console.log("API URL:", PUBLIC_URL);
 
@@ -19,16 +17,8 @@ export default function ShowFunds(){
 
         const fetchFunds = async () => {
 
-            const token = localStorage.getItem('token');
-
             try {
-                const response = await axios.get(`${PUBLIC_URL}/fund`, {
-                headers: {
-                        "ngrok-skip-browser-warning": "true",
-                        Authorization : `Bearer ${token}`
-                    }
-                });
-                
+                const response = await axios.get(`${PUBLIC_URL}/fund`, {});
                 setFunds(response.data);
             } 
             catch (error) {

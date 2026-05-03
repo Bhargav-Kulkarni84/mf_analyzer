@@ -4,6 +4,7 @@ node_modules
 # Ignore test files
 calculator/test.js
 db/test.js
+db/00.adhocQuery.js
 helper/test.js
 
 # Ignore trash folder
@@ -11,3 +12,4 @@ trash/
 
 routes/funds.txt
 routes/nav.txt
+

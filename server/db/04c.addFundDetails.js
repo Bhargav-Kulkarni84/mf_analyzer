@@ -1,10 +1,13 @@
+//This function receives a fund as an argument 
+//it then adds META DATA and NAV DATA for a given batch of funds using the respective functions.
+
 import axios from "axios";
 
 import { addMetaData } from "./04a.addMetaData.js";
 import { addNavData } from "./04b.addNavData.js";
 import { parseMetaData } from "../helper/parseMetaData.js";
 
-async function processFunds(fund){
+async function addFundDetails(fund){
     
     try{
 
@@ -23,10 +26,12 @@ async function processFunds(fund){
         await addNavData(fund.id, navData);
     }   
     catch(e){
-        console.log("Failed fund:", fund.scheme_code);
+        console.log("Failed fund:","\n");
+        console.log("Name = ", fund.fund_name,"\n");
+        console.log("Code = ", fund.scheme_code,"\n");
     }
     
 
 }
 
-export {processFunds};
+export {addFundDetails};
