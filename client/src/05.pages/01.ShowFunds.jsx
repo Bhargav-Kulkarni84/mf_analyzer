@@ -4,9 +4,8 @@ import {useState,useEffect} from 'react';
 
 //PUBLIC URL
 const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL;
-console.log("API URL:", PUBLIC_URL);
 
-import FundCard from '../components/03.FundCard.jsx'
+import FundCard from '../01.components/03.FundCard.jsx'
 
 export default function ShowFunds(){
 
@@ -18,7 +17,7 @@ export default function ShowFunds(){
         const fetchFunds = async () => {
 
             try {
-                const response = await axios.get(`${PUBLIC_URL}/fund`, {});
+                const response = await axios.get(`${PUBLIC_URL}/funds`, {});
                 setFunds(response.data);
             } 
             catch (error) {

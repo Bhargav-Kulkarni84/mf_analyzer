@@ -12,7 +12,7 @@ app.use(express.json());
 const router = express.Router();
 
 //Handling the post request for authentication.
-
+//This function returns jwt and username as a user field.
 router.post("/login", async(req,res,next) =>{
 
         //Extract the email and password from the FORM body.
@@ -33,7 +33,7 @@ router.post("/login", async(req,res,next) =>{
         if(isValidPassword){
             //Generate a token and send it to user.
             const token = jwt.sign({id:id,username:username},process.env.JWT_SECRET);
-            return res.json({"token":token});
+            return res.json({"token":token, "user":username});
         }
 
         return res.status(401).json({ message: "Invalid password" });
@@ -42,7 +42,6 @@ router.post("/login", async(req,res,next) =>{
 )
 
 //Signup Login for existing users.
-
 router.post("/signup",async(req,res,next)=>{
 
     //Extract the email and password from the FORM body.

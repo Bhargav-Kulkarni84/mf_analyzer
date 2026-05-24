@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { fundCategories } from "../helpers/fundCategories";
+import { fundCategories } from "../04.helpers/fundCategories";
 import { useState } from "react";
 
 export default function SubCategories() {
@@ -20,6 +20,7 @@ export default function SubCategories() {
     function handleClick(subcategory){
 
       const exists = filters.includes(subcategory);
+
       //Return a new array without the subcategory element.
       if(exists) setFilters(prev=> prev.filter(val => val !== subcategory));
 
@@ -37,17 +38,11 @@ export default function SubCategories() {
     }
 
     return (
-      <div className="flex flex-col items-center p-8 gap-8 max-w-6xl mx-auto">
+      <div className="flex flex-col items-center p-8 gap-10 max-w-6xl mx-auto">
 
         <h2 className="text-2xl font-semibold ">
           {selectedCategory.name} Funds
         </h2>
-
-      {/* Filters */}
-      <div className="flex justify-between gap-6">
-        <div className="p-4 shadow-md bg border-2 border-sky-200 rounded-xl w-50px hover:scale-105 hover:text-sky-400">Search Filtered</div>
-        <div onClick={clearFund} className="p-4 shadow-md bg border-2 border-red-200 rounded-xl w-50px hover:scale-105 hover:text-red-400">Clear All Filters</div>
-      </div>
 
         <div className="grid grid-cols-4 gap-8 max-w-3xl ">
           {selectedCategory.subcategories.map((subcategory, index) => (
@@ -61,6 +56,12 @@ export default function SubCategories() {
             </div>
 
           ))}
+        </div>
+
+            {/* Filters */}
+        <div className="flex justify-between gap-6 mt-8">
+          <div className="p-4 shadow-md bg border-2 border-sky-200 rounded-xl w-50px hover:scale-105 hover:text-sky-400 cursor-pointer">Search Filtered</div>
+          <div onClick={clearFund} className="p-4 shadow-md bg border-2 border-red-200 rounded-xl w-50px hover:scale-105 hover:text-red-400 cursor-pointer">Clear All Filters</div>
         </div>
 
       </div>

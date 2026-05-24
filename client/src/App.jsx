@@ -1,10 +1,5 @@
-import Categories from "./components/01.Categories"
+import router from './00.router/MainRouter.jsx'
+import { RouterProvider } from 'react-router-dom'
 
-function App() {
+export default App =>(<RouterProvider router={router} />)
 
-  return (
-      <Categories/>
-  )
-}
-
-export default App

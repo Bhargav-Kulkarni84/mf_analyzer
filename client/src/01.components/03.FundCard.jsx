@@ -39,7 +39,7 @@ export default function ({ fund }) {
             {/* View Fund Button */}
             <Link
             
-                to={`/fund/${fund.scheme_code}`}
+                to={`/funds/scheme/${fund.scheme_code}`}
             
                 className="mt-2 bg-blue-600 text-white py-2 rounded-xl font-medium 
                             hover:cursor-pointer hover:bg-blue-700 transition-all text-center">     

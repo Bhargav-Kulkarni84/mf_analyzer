@@ -15,8 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/', authRoutes);
-app.use('/fund', getFund);
+app.use('/user', authRoutes);
+app.use('/funds', getFund);
 
 const PORT = process.env.PORT || 3000;
 
