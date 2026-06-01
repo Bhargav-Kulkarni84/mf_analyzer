@@ -13,3 +13,6 @@ trash/
 routes/funds.txt
 routes/nav.txt
 
+#Ignore database related folders
+/db
+
