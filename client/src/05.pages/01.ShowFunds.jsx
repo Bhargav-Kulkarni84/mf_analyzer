@@ -11,7 +11,7 @@ export default function ShowFunds(){
 
     const [funds, setFunds] = useState([]);
 
-    //Fetch all the funds at the start from the database.
+    //Fetch all the funds at the start from the database via server.
     useEffect(()=>{
 
         const fetchFunds = async () => {
