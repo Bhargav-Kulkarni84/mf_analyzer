@@ -1,4 +1,7 @@
-//This function divides the array in chunks. The chunk size is passed as a argument.
+/* 
+    This function divides the array in chunks. 
+    The chunk size is passed as a argument.
+*/
 
 function getChunks(arr, chunkSize){
 

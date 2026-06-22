@@ -1,4 +1,11 @@
-import { wait } from "./02.delay.js";
+/*
+    This fund takes scheme code as an argument.
+    It make an api request to mfapi using provided scheme code.
+    
+    If any error occurs it retries for 3 times, by exponentially backing off.
+*/
+
+import { wait } from "./00.wait.js";
 import axios from "axios";
 
 async function fetchFundData(scheme_code){

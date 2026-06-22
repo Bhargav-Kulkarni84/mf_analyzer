@@ -1,4 +1,8 @@
-//This file adds a nav chunk(nav data of size n) for a particular fund.
+/*
+    This file takes fund_id, nav data if size chunk as input.
+    It adds that chunk in the fund with provided fund id.
+
+*/
 
 async function insertNavChunk(client,chunk,fund_id){
 

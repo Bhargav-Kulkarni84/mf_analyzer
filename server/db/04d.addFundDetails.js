@@ -1,13 +1,15 @@
-//This function receives a fund as an argument 
-//it then adds META DATA and NAV DATA for a given batch of funds using the respective functions.
+/*
+    This function receives a fund as an argument 
+    it then adds META DATA and NAV DATA for a given batch of funds using the respective functions.
+*/
 
 import axios from "axios";
 
-import { pool } from "./01.createPool.js";
-import { addMetaData } from "./04a.addMetaData.js";
-import { addNavData } from "./04b.addNavData.js";
-import { addProcessingStatus } from "./04c.addProcessingStatus.js";
-import {logError} from "../error_handlers/00.logError.js"
+import {pool} from "./01.createPool.js";
+import {addMetaData} from "./04a.addMetaData.js";
+import {addNavData} from "./04b.addNavData.js";
+import {addProcessingStatus} from "./04c.addProcessingStatus.js";
+import {logError} from "../logger/00.logError.js"
 import {fetchFundData} from "./utils/04.fetchFundData.js"
 
 async function addFundDetails(fund){
@@ -23,7 +25,6 @@ async function addFundDetails(fund){
         const scheme_code = parseInt(fund.scheme_code);
 
         //Get the meta data and nav of the current fund from mf api.
-        // const res = await axios.get(`https://api.mfapi.in/mf/${scheme_code}`,{timeout:10000});
         const res = await fetchFundData(scheme_code);
         
         //Check if the api is sending correct data.
@@ -34,7 +35,6 @@ async function addFundDetails(fund){
         //Seperate the meta data and nav data from the fund.
         const metaData = res.data.meta;
         const navData = res.data.data;
-        // const metaData = parseMetaData(rawMetaData);
 
         //Wrap with transactions.
         await client.query("BEGIN");
@@ -51,19 +51,14 @@ async function addFundDetails(fund){
         const latestNavDate = new Date(`${year}-${month}-${day}`);
         const daysOld =(Date.now() - latestNavDate.getTime()) / (1000 * 60 * 60 * 24);
         const isActive = daysOld < 30;
-
-        await addProcessingStatus(client,fund.id,isActive);
+        
+        //The fund is active only if current nav data - current data < 1 month. 
+        await addProcessingStatus(client,fund.id,scheme_code,isActive);
 
         await client.query("COMMIT");
     }   
     
     catch(e){
-
-        console.log({
-            fund: fund.scheme_name,
-            code: fund.scheme_code,
-            message: e.message
-        });
 
         //Add the Error to Error Log File.
         try{

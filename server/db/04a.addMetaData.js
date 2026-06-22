@@ -1,6 +1,8 @@
-//This function receives a meta data from fund it then 
-//finds the fund in db and then adds the meta data to it.
-
+/*
+    This function receives meta data as an argument.
+    1.The function finds the fund from db
+    2.Tries adding the meta data to it.
+*/
 
 async function addMetaData(client,metaData){
 
@@ -26,7 +28,7 @@ async function addMetaData(client,metaData){
         }
 
         // console.log(`Added Meta Data for fund ${schemeName} with Scheme Code : ${schemeCode} Succesfully`);
-        console.log(`Metadata Insertion Succesful for fund with scheme code - ${scheme_code}`);
+        // console.log(`Metadata Insertion Succesful for fund with scheme code - ${scheme_code}`);
     }
 
     catch(err){

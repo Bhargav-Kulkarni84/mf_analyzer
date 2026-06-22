@@ -14,17 +14,17 @@ async function addNavData(client,id,navData,scheme_code){
         //1.Divide nav_history in a chunk of size 500.
         const nav_chunks = getChunks(navData,500); 
 
-        console.log(`Inserting ${navData.length} NAV rows for fund ${fund_id}`);
+        // console.log(`Inserting ${navData.length} NAV rows for fund ${fund_id}`);
 
         //2.Iterate through each chunk and create values for query.
         for(let i=0; i<nav_chunks.length; i++){
-            console.log(`Processing Fund ${fund_id}: chunk ${i+1}/${nav_chunks.length}`);
+            // console.log(`Processing Fund ${fund_id}: chunk ${i+1}/${nav_chunks.length}`);
 
             //3.Process Individual Chunk.
             await insertNavChunk(client,nav_chunks[i],fund_id);
         }
 
-        console.log(`Inserted NAV rows for fund with fund id : ${fund_id} and scheme code : ${scheme_code}`);
+        // console.log(`Inserted NAV rows for fund with fund id : ${fund_id} and scheme code : ${scheme_code}`);
 
     }
     catch(err){

@@ -1,8 +1,10 @@
 //This function do batching, it picks 10 funds from the database and processes them.
 
 import {pool} from './01.createPool.js'
-import { processFunds } from "./05a.processFunds.js";
-import { wait } from './utils/02.delay.js';
+import { processBatch } from "./05a.processBatch.js";
+import { wait } from './utils/00.wait.js';
+
+import { debugLog } from '../logger/01.debugLog.js';
 
 async function createBatch(){
 
@@ -14,28 +16,30 @@ async function createBatch(){
     let funds = [];
 
     try{
-        // const result = await pool.query(`
-        //     SELECT 
-        //     fm.id,fm.scheme_code,fm.scheme_name 
-        //     FROM fund_master fm
-        //     JOIN
-        //     fund_processing_status fps
-        //     ON
-        //     fm.id = fps.fund_id 
-        //     WHERE data_downloaded = FALSE
-        //     ORDER BY fm.id
-        //     LIMIT 50;`
-        // );
-        const result = await pool.query(`SELECT id,scheme_code,scheme_name FROM fund_master;`);
-
+        const result = await pool.query(`
+            SELECT 
+            fm.id,fm.scheme_code,fm.scheme_name 
+            FROM fund_master fm
+            JOIN
+            fund_processing_status fps
+            ON
+            fm.id = fps.fund_id 
+            WHERE data_downloaded = FALSE
+            ORDER BY fm.id;`
+        );
+        // const result = await pool.query(`SELECT id,scheme_code,scheme_name FROM fund_master;`);
         funds = result.rows;
+
     }
     
     catch(e){
+        
+        const fileName = "06.createBatch.js";
+        const line = "39";
+        const message = "Error while fetching funds for processing from database."
 
-        console.log(`Error while unprocessed funds extraction in 06.createBatch.js at line 29.\n`);
-        console.log(e);
-        console.log(`Error while unprocessed funds extraction in 06.createBatch.js at line 29.\n`);
+        //Log the adhoc error.
+        await debugLog(fileName,line,message,e);
         
     }
     
@@ -48,30 +52,31 @@ async function createBatch(){
     //2.Divide all the 37k funds in a batch of 10. (ie 3.7k batches).
 
     const totalBatches = Math.ceil(funds.length/10);
-    let failed = 0;
-    
+
+    let batchFailures = 0;
+
     for(let batchIdx=0; batchIdx<funds.length; batchIdx+=10){
 
         //a.Variable to track current batch number.
-        let batchCount = (batchIdx/10)+1;
+        let batchNo = (batchIdx/10)+1;
 
         //b.Create a batch of funds.
         const batch = funds.slice(batchIdx,batchIdx+10);
 
         //c.Process current batch.
-        console.log(`Processing Batch-${batchCount} out of ${totalBatches}`);
+        console.log(`Processing Batch-${batchNo} out of ${totalBatches}`);
         try{
-            await processFunds(batch);
+            await processBatch(batch,batchNo);
         }
         catch(e){
             //If we encounter any error during the current batch processing, increment the failed fund count;
-            console.log(`Error while processing batch-${batchCount} 06.createBatch.js at line 62.\n`);
+            console.log(`Error while processing batch-${batchNo} 06.createBatch.js at line 62.\n`);
             console.log(e);
-            failed+=batch.length;
+            batchFailures++;
         }
 
         //d.Log progress status.
-        const percent =((batchCount / totalBatches) * 100).toFixed(2);
+        const percent =((batchNo / totalBatches) * 100).toFixed(2);
         console.log(`Progress: ${percent}%`);
 
         //Wait 10 Seconds Before Creating a new batch.
@@ -83,19 +88,19 @@ async function createBatch(){
 
     console.log("PIPELINE SUMMARY");
 
-    //a.Get total funds, failed funds
+    // a.Get total funds, failed funds
     
-    // let failedResult = 0;
-    // let failed = 0;
+    let failedResult = 0;
+    let failed = 0;
 
-    // try{
-    //     failedResult = await pool.query(`SELECT COUNT(*) AS count FROM fund_processing_status WHERE retry_count = 3`);
-    //     failed = Number(failedResult.rows[0].count);
-    // }
-    // catch(e){
-    //     console.log("Couldn't get the funds for which the processing failed, assuming it to be 0");
-    //     console.log(e);
-    // }
+    try{
+        failedResult = await pool.query(`SELECT COUNT(*) AS count FROM fund_processing_status WHERE retry_count = 3`);
+        failed = Number(failedResult.rows[0].count);
+    }
+    catch(e){
+        console.log("Couldn't get the funds for which the processing failed, assuming it to be 0");
+        console.log(e);
+    }
     
     const total = funds.length;    
     const successful = total - failed;
@@ -108,7 +113,7 @@ async function createBatch(){
     console.log(`SuccessfulFunds : ${successful}\n`);
     console.log(`Failed : ${failed}\n`);
     console.log(`Success Rate : ${(successful/total)*100}%\n`);
-    console.log(`Time Taken : ${timeTaken} hrs\n`);
+    console.log(`Time Taken : ${timeTaken} hrs\n or (${timeTaken*60} min) `);
 
 
 }

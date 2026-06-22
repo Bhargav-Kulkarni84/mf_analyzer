@@ -1,25 +1,26 @@
 import { addFundDetails } from "./04d.addFundDetails.js";
 import fs from 'fs/promises'
 import { wrap } from "./utils/03.wrap.js";
-import { wait } from "./utils/02.delay.js";
+import { wait } from "./utils/00.wait.js";
 import { pool } from "./01.createPool.js";
+import { logFailedFunds } from "../logger/02.logFailedFunds.js";
 
 const retryLimit = 3;
 
-async function retryFailedFunds(failedInsertionsIndexes,funds){
+async function retryFailedFunds(failedFundIndexes,batch){
 
     //Array to store all the failed insertions.
-    let failedPromises = [];
+    let retryPromises = [];
 
-    //Keep retrying until we cross retry threshold or all the funds are resolved.
+    //Keep retrying until we cross retry threshold or all the batch are resolved.
     let retryCount = 0;
+   
+    while(failedFundIndexes.length > 0 && retryCount<retryLimit){
 
-    //Array to store the error message.
-    const failedFundsWithErrors = [];
+        //Array to store the rejected batch with error message for this iteration.
+        let rejectedFunds = [];
 
-    while(failedInsertionsIndexes.length > 0 && retryCount<retryLimit){
-
-        //wait for 5 seconds before making an retry request;
+        //wait for 5 seconds before making a retry request;
         console.log("Retrying in ...")
         for(let i=5; i>0; i--){
             console.log("%d secs",i);
@@ -27,31 +28,32 @@ async function retryFailedFunds(failedInsertionsIndexes,funds){
         }
 
         //Increment the retry limit counter.
-        console.log(`Retry #${retryCount+1} for ${failedInsertionsIndexes.length} funds`);
+        // console.log(`Retry #${retryCount+1} for ${failedFundIndexes.length} batch`);
         retryCount++;
 
-        //Loop through each index of failed fund and add it to the failedPromises array.
-        failedInsertionsIndexes.forEach((failedIndex) =>{
-            const fundPromise = addFundDetails(funds[failedIndex]);
-            failedPromises.push(wrap(fundPromise,failedIndex)); 
+        //Loop through each index of failed fund and add it to the retryPromises array.
+        failedFundIndexes.forEach((failedIndex) =>{
+            const fundPromise = addFundDetails(batch[failedIndex]);
+            retryPromises.push(wrap(fundPromise,failedIndex)); 
         })
         
-        //Check if any funds failed again;
-        const results = await Promise.all(failedPromises);
+        //Check if any batch failed again;
+        const results = await Promise.all(retryPromises);
 
         //Clear the previous failed insertions and promises array to insert new entries.
-        failedInsertionsIndexes = [];
-        failedPromises = [];
+        failedFundIndexes = [];
+        retryPromises = [];
 
-
-        //Loop through all the promises and add the index of the funds for which the insertion failed.
+        //Loop through all the fullfilled promises.
         results.forEach((result)=>{
 
+            //Check if promise rejected (fund failed.
             if(result.status === "failed"){
                 
-                failedInsertionsIndexes.push(result.index);
+                //If fund has failed, add the failed fund index.
+                failedFundIndexes.push(result.index);
                 
-                failedFundsWithErrors.push({
+                rejectedFunds.push({
                     index: result.index,
                     error: result.error?.message || String(result.error)
                 })
@@ -61,54 +63,9 @@ async function retryFailedFunds(failedInsertionsIndexes,funds){
         })
     }
 
-    //Write the details of a fund that has failed more than retry limit (3 times as of now).
-    //fund's name, schemecode and error in a file to manually check the values for it.
 
-    const failedFunds = [];
-
-    for(let i=0; i<failedFundsWithErrors.length; i++){
-
-        failedFundsWithErrors = [];
-
-        const currFund = failedFundsWithErrors[i];
-        const {index,error} = currFund;
-
-        const fundDetails = {
-            id : funds[index].id,
-            schemeCode : funds[index].scheme_code,
-            name : funds[index].scheme_name
-        }
-
-        failedFunds.push(fundDetails);
-
-        //Add status as failed in db.
-        const query = `UPDATE 
-                        fund_processing_status
-                        SET
-                            last_error = $1,
-                            retry_count = 3
-                        WHERE fund_id = $2
-                        `
-
-        await pool.query(query,[error,funds[index].id]);
-
-
-
-    }
-
-    if(failedFunds.length === 0){
-        console.log("No Fund Failed for current batch");
-        return;
-    }
-
-    try {
-        await fs.appendFile('./failedFunds.json', JSON.stringify(failedFunds) + "\n");
-        console.log('File for failed successfully written!');
-    } 
-    catch (err) {
-        console.error('Error writing to file failedFunds.json:', err);
-    }
-   
+    //Log all the rejected funds.
+    await logFailedFunds(rejectedFunds,batch);
 }
 
 export {retryFailedFunds};
