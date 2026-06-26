@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import {pool} from '../db/01.createPool.js'
+import {pool} from '../01.db/01.createPool.js'
 
 //Auth helpers
 import { generateHashedPassword } from './auth_helpers/01.hashPassword.js';

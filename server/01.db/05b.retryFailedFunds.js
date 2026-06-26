@@ -14,6 +14,9 @@ async function retryFailedFunds(failedFundIndexes,batch){
 
     //Keep retrying until we cross retry threshold or all the batch are resolved.
     let retryCount = 0;
+
+    //Variable to keep track of funds outside of loop.
+    let rejectedFundsHolder = [];
    
     while(failedFundIndexes.length > 0 && retryCount<retryLimit){
 
@@ -24,7 +27,9 @@ async function retryFailedFunds(failedFundIndexes,batch){
         console.log("Retrying in ...")
         for(let i=5; i>0; i--){
             console.log("%d secs",i);
-            await wait(1000);
+
+            //Do exponential backoff
+            await wait(5000 * retryCount);
         }
 
         //Increment the retry limit counter.
@@ -61,11 +66,13 @@ async function retryFailedFunds(failedFundIndexes,batch){
             };
 
         })
+
+        rejectedFundsHolder = rejectedFunds;
     }
 
 
     //Log all the rejected funds.
-    await logFailedFunds(rejectedFunds,batch);
+    await logFailedFunds(rejectedFundsHolder,batch);
 }
 
 export {retryFailedFunds};

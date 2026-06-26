@@ -1,6 +1,6 @@
 //Returns fund id from the data base cooresponding to the funds scheme id.
 
-import {pool} from '../../db/01.createPool.js'
+import {pool} from '../../01.db/01.createPool.js'
 
 async function getFundId(scheme_code){
  
