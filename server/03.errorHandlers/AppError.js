@@ -1,6 +1,6 @@
 class AppError extends Error{
 
-    constructor(message,statusCode,redirectTo = null){
+    constructor(message,statusCode,cause=null,redirectTo = null){
 
         //Pass the message to the parent constructor.
         super(message);
@@ -8,6 +8,7 @@ class AppError extends Error{
         //Add the field status code to current AppError object and give it value passed a parameter to constructor.
         this.statusCode = statusCode;
         this.status = "server error"
+        this.cause = cause;
         
         //If status code starts with 4 then the error is from client side.
         if(Math.floor(statusCode / 100) === 4){

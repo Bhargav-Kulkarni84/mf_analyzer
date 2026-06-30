@@ -1,61 +1,40 @@
-import {pool} from '../../01.db/01.createPool.js'
-
-async function getNav(fundID,navDate,rollingYear){
-
-    //Select nav value from nav history, 
-    //where the fund id is given and
-    //new nav date is greater than or eqaul to current date 
-
-    const navResult = await pool.query(
+//Binary Search to find the next greater or eqaul element.
+//smallest element greater than current nav
+function getNav(nav_history,currDate,rollingYear){
         
-        `SELECT nav, nav_date
-         FROM nav_history
-         WHERE fund_id = $1
-         AND nav_date <= ($2 :: date - INTERVAL '1 year' * $3)
-         ORDER BY nav_date DESC
-         LIMIT 1;
-        `
+    let rollingDate = new Date(currDate);
+    rollingDate.setFullYear(rollingDate.getFullYear()-rollingYear)
 
-        ,[fundID,navDate,rollingYear]
+    const targetTime = rollingDate.getTime();
 
-    );
+    let start = 0;
+    let end = nav_history.length-1;
+    let ans = -1;
 
-    // console.log(navResult.rows);
+    while(start<=end){
 
-    if((navResult.rows).length == 0){
-        return NaN;
+        let mid = Math.floor((start + end) / 2);    
+
+        if(nav_history[mid].time >= targetTime){
+            ans = mid;
+            end = mid-1;
+        }
+        else{
+            start = mid+1;
+        } 
+
     }
 
-    // [ { nav: '16.15750' } ]
-    return {
-        nav : navResult.rows[0].nav,
-        date : navResult.rows[0].nav_date
-    }
+    if (ans === -1) return -1;
 
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    if (nav_history[ans].time - targetTime > sevenDays) return -1;
+
+    return nav_history[ans].nav;
+    
 }
 
+
 export {getNav};
-
-/*
-
-    AND nav_date <= ($2 :: date - (INTERVAL '1 year') * $3)
-
-    $2 :: date ==> type case second argument to DATE type.
-    (INTERVAL '1 year') * $3 ==> Multiply the interval by a year to get the updated year.
-    
-    nav_date <= '2006-05-30' - INTERVAL '1 year'
-
-*/
-
-/*
-
-    AND nav_date <= ($2 :: date - (($3 || 'years') :: interval))
-
-    $2 :: date ==> type case second argument to DATE type.
-    ($3 || 'years') :: interval ==> concatenate third argument and years then type cast it to INTERVAL ==> $3 years
-    
-    nav_date <= '2006-05-30' - INTERVAL '1 year'
-
-*/
 
 

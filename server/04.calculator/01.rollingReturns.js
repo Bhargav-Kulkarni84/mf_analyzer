@@ -1,86 +1,88 @@
-import { getNav } from './calculator_helpers/02.getNav.js';
+import {getNav } from './calculator_helpers/02.getNav.js';
 import {getCAGR} from './calculator_helpers/03.getCAGR.js';
 
 //DB 
 import {getFundId} from './calculator_helpers/00.getFundId.js'
 import { getNavHistory } from './calculator_helpers/01.getNavHistory.js';
+import AppError from '../03.errorHandlers/AppError.js';
 
 async function getRollingReturns(scheme_code,rollingYear){
 
-    //Fetch the fund id cooresponding to the scheme code;
-    const fundID = await getFundId(scheme_code);
+    try{
+        //Fetch the fund id cooresponding to the scheme code;
+        const fund_id = await getFundId(scheme_code);
 
-    //Fetch the NAV history of requested fund from the database.
+        //Fetch the NAV history of requested fund from the database.
+        let nav_history = await getNavHistory(fund_id);
 
-    let navHistory = await getNavHistory(fundID);
-    // console.log("Nav Logs = "+navHistory.length);
+        //Process nav_history for binary search.
+        //Add the time stamp for comparison.
+        nav_history = nav_history.map(row =>(
+            {
+                nav: Number(row.nav),
+                // "YYYY-MM-DD"    
+                date: row.nav_date,
+                //Processed for Binary Search.      
+                time: new Date(row.nav_date).getTime() 
+            }
+        ))
 
-    //Count the number of funds available for computing rolling returns.
-    let fundCount = 0;
+        //Count the number of data points available for computing rolling returns.
+        let dataPoints = 0;
 
-    //Variable to store the total, min and max CAGR.
-    let rollingCAGR = 0;
-    let maxCAGR = -Infinity;
-    let minCAGR = Infinity;
+        //Variable to store the total, min and max CAGR.
+        let rollingCAGR = 0;
+        let maxCAGR = -Infinity;
+        let minCAGR = Infinity;
 
-    //Get rolling return for each value of fund.
+        //Get rolling return for each value of fund.
+        for(const navEntry of nav_history){
+            
+            //For current fund store the current nav and date.
+           const { nav: currNav, date: currNavDate } = navEntry;
+            
+            //Get the nav after rolling years.
+            let oldNav = getNav(nav_history,currNavDate,rollingYear);
+            
+            //If no nav exist corresponding to current date, continue.
+            if(oldNav === -1) continue;
+            
+            //Compute the CAGR n years.
+            let currCAGR = getCAGR(currNav,oldNav,rollingYear); 
+            
+            //Store the max and min CAGR values of all funds.
+            maxCAGR = Math.max(currCAGR,maxCAGR);
+            minCAGR = Math.min(currCAGR,minCAGR);
 
-    //Start from rolling year
-    //If rolling year is 2 
-    //Shift first 2*365 entries as there will not be any prior data available as our fund dates ares stored in asending order.
-    //Subtracting 100 for missing dates.
-    
-    for(let i=0; i<navHistory.length; i++){
+            rollingCAGR += currCAGR;
+
+            dataPoints++;
+            
+        };
+
+        if (dataPoints === 0) {
+            throw new AppError(
+                `Insufficient NAV history for ${rollingYear}-year rolling returns.`,
+                400
+            );
+        }
+
+        const avgRollingCAGR = rollingCAGR/dataPoints;
         
-        const fund = navHistory[i];
+        //Return rolling return details.
+        return {
+            avg:avgRollingCAGR,
+            max:maxCAGR,
+            min:minCAGR,
+            dataPoints:dataPoints
+        };
 
-        //Store the current fund nav.
-        let currNav = fund.nav;
-
-        //Get the current nav date of the fund.
-        const navDate = fund.nav_date;
-        const formattednavDate = new Date(navDate).toISOString().slice(0, 10);
-
-        //Get the nav after rolling years.
-        let result = await getNav(fundID,navDate,rollingYear);
-
-        if(!result) continue;
-        
-        let newNav = result.nav;
-        let newNavDate = result.date;
-        const formattednewNavDate = new Date(navDate).toISOString().slice(0, 10);
-
-        //If no valid nav exists don't consider the entry.
-        if(Number.isNaN(newNav)) continue;
-
-        //Compute the CAGR n years.
-        let currCAGR = getCAGR(currNav,newNav,rollingYear); 
-        
-        //Store the max and min CAGR values of all funds.
-        maxCAGR = Math.max(currCAGR,maxCAGR);
-        minCAGR = Math.min(currCAGR,minCAGR);
-
-        rollingCAGR = rollingCAGR + currCAGR;
-
-        fundCount++;
-
-        // console.log(`Rolling Returns between ${formattednavDate} & ${formattednewNavDate} = ${currCAGR.toFixed(2)}% `);
-        
-    };
-
-    if (fundCount === 0) {
-        return { avg: null, max: null, min: null };
     }
 
-    const avgRollingCAGR = rollingCAGR/fundCount;
-
-    // console.log(`${rollingYear} Year Avg Rolling Returns = ${avgRollingCAGR.toFixed(2)} %`);
-    // console.log(`${rollingYear} Year Min Rolling Returns = ${minCAGR.toFixed(2)} %`);
-    // console.log(`${rollingYear} Year Max Rolling Returns = ${maxCAGR.toFixed(2)} %`);
-
-    const rollingReturnObj = {avg:avgRollingCAGR,max:maxCAGR,min:minCAGR,fundCount:fundCount};
-
-    return rollingReturnObj;
+    catch(err){
+        throw new AppError(`Error computing rolling returns`,500,err);
+    } 
+    
 
 }
 
