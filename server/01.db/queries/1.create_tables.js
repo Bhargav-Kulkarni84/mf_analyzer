@@ -18,7 +18,7 @@ const fund_master = `CREATE TABLE IF NOT EXISTS fund_master(
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 
-)`
+);`
 
 // const fund_profile = `CREATE TABLE IF NOT EXISTS fund_profile(
 
@@ -59,7 +59,7 @@ const nav_history = `CREATE TABLE IF NOT EXISTS nav_history(
 
     PRIMARY KEY (fund_id,date)
 
-)`
+);`
 
 const fund_processing_status = `CREATE TABLE IF NOT EXISTS fund_processing_status(
 
@@ -76,8 +76,30 @@ const fund_processing_status = `CREATE TABLE IF NOT EXISTS fund_processing_statu
         FOREIGN KEY (fund_id)
         REFERENCES fund_master(id)
 
-)`
+);`
+
+const rolling_return_summary = `CREATE TABLE IF NOT EXISTS 
+                        rolling_return_summary(
+                        fund_id INTEGER NOT NULL,
+
+                        min_return NUMERIC NOT NULL,
+                        max_return NUMERIC NOT NULL,
+                        avg_return NUMERIC NOT NULL,
+
+                        rolling_period_years INTEGER NOT NULL,
+                        observation_count INTEGER NOT NULL,
+
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
+                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+                        PRIMARY KEY(fund_id, rolling_period_years),
+
+                        CONSTRAINT rr_fk
+                        FOREIGN KEY (fund_id)
+                        REFERENCES fund_master(id)
+                        ON DELETE CASCADE
+);
+`
 
 
-
-export {fund_master,nav_history,fund_processing_status}; 
+export {fund_master,nav_history,fund_processing_status,rolling_return_summary}; 

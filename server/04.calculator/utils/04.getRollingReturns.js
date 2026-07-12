@@ -1,31 +1,13 @@
-import {getNav } from './calculator_helpers/02.getNav.js';
-import {getCAGR} from './calculator_helpers/03.getCAGR.js';
+//Processing
+import {getNav } from './02.getNav.js';
+import {getCAGR} from './03.getCAGR.js';
 
-//DB 
-import {getFundId} from './calculator_helpers/00.getFundId.js'
-import { getNavHistory } from './calculator_helpers/01.getNavHistory.js';
-import AppError from '../03.errorHandlers/AppError.js';
+//DB
+import AppError from '../../03.errorHandlers/AppError.js';
 
-async function getRollingReturns(scheme_code,rollingYear){
+async function getRollingReturns(fund_id,scheme_code,nav_history,rollingYear){
 
     try{
-        //Fetch the fund id cooresponding to the scheme code;
-        const fund_id = await getFundId(scheme_code);
-
-        //Fetch the NAV history of requested fund from the database.
-        let nav_history = await getNavHistory(fund_id);
-
-        //Process nav_history for binary search.
-        //Add the time stamp for comparison.
-        nav_history = nav_history.map(row =>(
-            {
-                nav: Number(row.nav),
-                // "YYYY-MM-DD"    
-                date: row.nav_date,
-                //Processed for Binary Search.      
-                time: new Date(row.nav_date).getTime() 
-            }
-        ))
 
         //Count the number of data points available for computing rolling returns.
         let dataPoints = 0;
