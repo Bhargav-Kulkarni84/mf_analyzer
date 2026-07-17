@@ -1,5 +1,5 @@
-import { pool } from "../01.db/01.createPool.js";
-import AppError from "../03.errorHandlers/AppError.js";
+import { pool } from "../../01.db/01.createPool.js";
+import AppError from "../../03.errorHandlers/AppError.js";
 
 async function updateDB(fund_id,min,max,avg,rollingPeriod,dataPoints){
 
@@ -16,7 +16,7 @@ async function updateDB(fund_id,min,max,avg,rollingPeriod,dataPoints){
         //UPSERT
         await client.query(`
             
-            INSERT INTO rolling_returns_summary
+            INSERT INTO rolling_return_summary
             (
                 fund_id,
                 min_return,
@@ -55,7 +55,8 @@ async function updateDB(fund_id,min,max,avg,rollingPeriod,dataPoints){
     }
     catch(e){
         await client.query("ROLLBACK");
-        throw new AppError(`Error while performing db insertion of rolling returns,`, 500, e);
+        console.log(`Error while performing db insertion of rolling returns for fund with fund id = ${fund_id}`);
+        throw new AppError(e.message,500,e);
     }
     finally {
         await client.release();

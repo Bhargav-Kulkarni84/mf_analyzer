@@ -25,10 +25,11 @@ function getNav(nav_history,currDate,rollingYear){
 
     }
 
-    if (ans === -1) return -1;
+    if (ans === -1) return null;
 
     const sevenDays = 7 * 24 * 60 * 60 * 1000;
-    if (nav_history[ans].time - targetTime > sevenDays) return -1;
+
+    if (nav_history[ans].time - targetTime > sevenDays) return null;
 
     return nav_history[ans].nav;
     
