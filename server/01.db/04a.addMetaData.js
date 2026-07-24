@@ -7,8 +7,7 @@
 async function addMetaData(client,metaData){
 
     try{
-        
-        const {fund_house,scheme_type,scheme_category,scheme_code,scheme_name,isin_growth, isin_div_reinvestment} = metaData;
+        const {fund_house,scheme_type,scheme_category,scheme_code,scheme_name,isin_growth,isin_div_reinvestment} = metaData;
 
         //Get the fund based on scheme code and update the meta data.
         const query = `

@@ -1,5 +1,7 @@
-//This function receives all the batch along with current batch index.
-//It then divides the batch into the batch and add details to each fund.
+/*
+    This function receives a batch of fund (10 funds) along with current batch index.
+    It then takes individual funds from the batches and starts adding the details of each fund.
+*/
 
 import fs from 'fs/promises'
 import { addFundDetails } from "./04d.addFundDetails.js";
@@ -7,7 +9,7 @@ import { addFundDetails } from "./04d.addFundDetails.js";
 import { wait } from "./utils/00.wait.js"
 import { wrap } from "./utils/03.wrap.js";
 import { retryFailedFunds } from './05b.retryFailedFunds.js';
-import { debugLog} from '../logger/01.debugLog.js'
+import { debugLog } from '../logger/01.debugLog.js'
 
 async function processBatch(batch,batchNo){
 
@@ -45,7 +47,7 @@ async function processBatch(batch,batchNo){
 
     }
     catch(e){
-        await debugLog("05a.processBatch.js",45,"Error during retrying...",e);
+        console.log(`05a.processBatch.js",50,"Error during retrying... message = ${e.message}`);
     }
    
 }

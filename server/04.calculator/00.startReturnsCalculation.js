@@ -1,20 +1,28 @@
 import {createBatch} from './01.createBatch.js'
 
-try{
+async function startReturnsCalculation(){
 
-    const startTime = new Date();
+    try{
 
-    console.log("Starting the returns calculations");
-    await createBatch();
-    console.log("Returns calculations successful");
+        const startTime = new Date();
 
-    const endTime = new Date();
+        console.log("Starting the returns calculations");
+        await createBatch();
+        console.log("Returns calculations successful");
 
-    const timeTaken = ((endTime-startTime)/(1000*60));
-    console.log(`Time taken = ${timeTaken} mins`);
+        const endTime = new Date();
 
-}
-catch(e){
-    console.log("ERROR PROCESSSING RETURNS CALCULATION");
-    console.log(`Reason + ${e.messsage}`);
-}
+        const timeTaken = ((endTime-startTime)/(1000*60));
+        console.log(`Time taken = ${timeTaken} mins`);
+
+    }
+
+    catch(e){
+        console.log("ERROR PROCESSSING RETURNS CALCULATION");
+        console.log(`Reason + ${e.messsage}`);
+    }
+
+
+} 
+
+export {startReturnsCalculation}

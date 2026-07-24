@@ -1,3 +1,11 @@
+/*
+    1.This fund receives indexes of all the funds that failed during initial processing.
+    
+    2.It then retries processing these batches 3 times with a delay of 5secs. 
+
+    3.If any fund fails after three retries then the failed funds will be logged to a json file for displaying on the admin dashboard;
+*/
+
 import { addFundDetails } from "./04d.addFundDetails.js";
 import fs from 'fs/promises'
 import { wrap } from "./utils/03.wrap.js";

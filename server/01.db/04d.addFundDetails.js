@@ -11,6 +11,7 @@ import {addNavData} from "./04b.addNavData.js";
 import {addProcessingStatus} from "./04c.addProcessingStatus.js";
 import {logError} from "../logger/00.logError.js"
 import {fetchFundData} from "./utils/04.fetchFundData.js"
+import {filterNav} from "./utils/05.filterNav.js"
 
 async function addFundDetails(fund){
     
@@ -34,28 +35,32 @@ async function addFundDetails(fund){
 
         //Seperate the meta data and nav data from the fund.
         const metaData = res.data.meta;
-        const navData = res.data.data;
+        let navData = res.data.data;
 
-        //Wrap with transactions.
-        await client.query("BEGIN");
+        if (navData.length === 0) throw new Error("NAV history is empty.");
 
-        transactionStarted = true;
-
-        //Add the Nav and Meta data of current fund.
-        await addMetaData(client,metaData);
-        await addNavData(client,fund.id, navData,scheme_code);
-
+        //Extract the latest nav date.
         const {date} = navData[0] ;
         const [day,month,year] = date.split("-");
-
         const latestNavDate = new Date(`${year}-${month}-${day}`);
         const daysOld =(Date.now() - latestNavDate.getTime()) / (1000 * 60 * 60 * 24);
         const isActive = daysOld < 30;
         
-        //The fund is active only if current nav data - current data < 1 month. 
-        await addProcessingStatus(client,fund.id,scheme_code,isActive);
+        //Wrap with transactions.
+        await client.query("BEGIN");
+        transactionStarted = true;
 
+        //Add the Nav and Meta data of current fund.
+        await addMetaData(client,metaData);
+        
+        //Filter fund data according to the last nav date computed for the current fund.
+        navData = await filterNav(client,fund.id,navData);
+
+        if(navData.length > 0) await addNavData(client,fund.id,navData,scheme_code);
+        
+        await addProcessingStatus(client,fund.id,scheme_code,isActive,latestNavDate);
         await client.query("COMMIT");
+    
     }   
     
     catch(e){

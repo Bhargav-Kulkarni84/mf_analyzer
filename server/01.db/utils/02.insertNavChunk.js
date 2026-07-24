@@ -1,5 +1,5 @@
 /*
-    This file takes fund_id, nav data if size chunk as input.
+    This file takes fund_id and chunk size as input.
     It adds that chunk in the fund with provided fund id.
 
 */

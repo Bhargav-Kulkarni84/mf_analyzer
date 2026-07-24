@@ -1,4 +1,4 @@
-//This scripts get all the funds from MF API's and adds to the funds table within mfdb database.
+//This scripts get all the funds from MF API's and adds to the fund_master table in mfdb database.
 
 import axios from 'axios';
 import {pool} from "./01.createPool.js";
@@ -39,4 +39,4 @@ async function insertFunds(){
     }
 }
 
-insertFunds();
+export {insertFunds};

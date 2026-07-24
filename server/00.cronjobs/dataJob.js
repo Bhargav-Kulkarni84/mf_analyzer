@@ -1,21 +1,9 @@
-//Add the recent nav data to the nav_history.
-//Update meta data.
+import cron from 'node-cron';
 
-import {pool} from '../01.db/01.createPool.js'
-import { fetchFundData } from '../01.db/utils/04.fetchFundData.js';
+// * * * * * * (sec | min | hr | day of month | month | day of week)
 
-//Select every active fund from db.
-const result = await pool.query(`
-        SELECT id,scheme_code FROM fund_master fm
-        JOIN fund_processing_status fps 
-        ON fm.id = fps.fund_id
-        WHERE is_active = FALSE
-    
-    `);
+cron.schedule("0 0 2 */1 * *",function (){
 
-//Make an api request to fetch nav and meta data of all the funds.
+    console.log("CRON JOB IS WORKING Every Day at 2 AM");
 
-
-const funds = result.rows;
-
-console.log(funds);
+})
