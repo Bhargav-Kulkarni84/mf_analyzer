@@ -1,7 +1,0 @@
-Central file will compute all returns, error handled.
-    Central file will select all funds.
-    Compute corresponding returns for each fund.
-    Logs error in any occurs.
-
-1.Implement error handled rolling returns computation logic.
-    It should throw error when any occurs.
