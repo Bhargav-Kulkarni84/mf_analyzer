@@ -1,12 +1,12 @@
 /*
-    This function do batching, it picks 10 funds from the database and processes them.
+    This function do batching, it picks 10 funds from the entire available funds and processes them.
 */
 
-import {pool} from './01.createPool.js'
-import { processBatch } from "./05a.processBatch.js";
+import {pool} from '../00.db/01.createPool.js'
+import { processBatch } from "./03a.processBatch.js";
 import { wait } from './utils/00.wait.js';
 
-import { debugLog } from '../logger/01.debugLog.js';
+import { debugLog } from '../06.logger/01.debugLog.js';
 
 async function createBatch(funds){
 
@@ -30,7 +30,6 @@ async function createBatch(funds){
             await processBatch(batch,batchNo);
         }
         catch(e){
-            //If we encounter any error during the current batch processing, increment the failed fund count;
             console.log(`Error while processing batch-${batchNo} , message = ${e.message}.\n`);
         }
 
@@ -47,12 +46,12 @@ async function createBatch(funds){
     console.log("PIPELINE SUMMARY");
 
     // a.Get total funds, failed funds
-    let failedResult = 0;
-    let failed = 0;
+    let result = 0;
+    let failedFunds = 0;
 
     try{
-        failedResult = await pool.query(`SELECT COUNT(*) AS count FROM fund_processing_status WHERE retry_count = 3`);
-        failed = Number(failedResult.rows[0].count);
+        result = await pool.query(`SELECT COUNT(*) AS count FROM fund_processing_status WHERE retry_count = 3`);
+        failedFunds = Number(failedResult.rows[0].count);
     }
     catch(e){
         console.log("Couldn't get the funds for which the processing failed, assuming it to be 0");

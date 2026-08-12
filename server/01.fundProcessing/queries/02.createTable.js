@@ -4,7 +4,7 @@
 
 import { pool } from "./01.createPool.js";
 
-import {fund_master,nav_history,fund_processing_status} from './queries/1.create_tables.js';
+import {fund_master,nav_history,fund_processing_status} from './1.create_tables.js';
 
 async function createTables(){
 

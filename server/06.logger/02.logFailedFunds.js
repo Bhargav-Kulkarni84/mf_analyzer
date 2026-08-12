@@ -3,7 +3,7 @@
     fund's name, schemecode and error in a file to manually check the values for it.
 */
 
-import {pool} from '../db/01.createPool.js'
+import {pool} from '../00.db/01.createPool.js'
 
 async function logFailedFunds(rejectedFunds,batch){
 

@@ -6,7 +6,7 @@
 
 async function insertNavChunk(client,chunk,fund_id){
 
-    //fund_id, date, nav
+    //contains fund_id, date, nav
     const vals = [];
 
     //query index
@@ -42,7 +42,7 @@ async function insertNavChunk(client,chunk,fund_id){
     // a. Join all placeholder by a comma creating a value string.
             //valsPlaceholder = [($1,$2,$3),($4,$5,$6),($7,$8,$9)]  
             // Join by ","; (Array --> String).
-            //resultingstring = "($1,$2,$3),($4,$5,$6),($7,$8,$9)"";
+            //resultingstring = "($1,$2,$3),($4,$5,$6),($7,$8,$9)";
     
     const placeholderString = valsPlaceholder.join(","); 
 

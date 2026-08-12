@@ -4,19 +4,18 @@
 */
 
 import fs from 'fs/promises'
-import { addFundDetails } from "./04d.addFundDetails.js";
+import { addFundDetails } from "./04.addFundDetails.js";
 
 import { wait } from "./utils/00.wait.js"
 import { wrap } from "./utils/03.wrap.js";
-import { retryFailedFunds } from './05b.retryFailedFunds.js';
-import { debugLog } from '../logger/01.debugLog.js'
+import { retryFailedFunds } from './03b.retryFailedFunds.js';
+import { debugLog } from '../06.logger/01.debugLog.js'
 
 async function processBatch(batch,batchNo){
 
     try{
         //1.Array to store all the failed insertions.
-        let failedFundIndexes = [];
-        let failedPromises = [];
+        let failedFunds = [];
 
         //2.Create an array to store the promises returned from each of 10 batch within a batch.
         let fundBatchPromises = [];
@@ -33,17 +32,28 @@ async function processBatch(batch,batchNo){
         let results = await Promise.all(fundBatchPromises);
 
         //5.Loop through all the responses of promises.
-        results.forEach((result)=>{
-            if(result.status === "failed"){
-                //add the fund index for which the insertion failed.
-                failedFundIndexes.push(result.index);
+        results.forEach((promise)=>{
+            if(promise.status === "failed"){
+                //Add the fund index for which the insertion failed.
+                failedFunds.push({
+                    fund : batch[promise.index],
+                    index : promise.index,
+                    error: promise.error,
+                })
             }
         })
 
         //Retry all the failed batch.
-        if(failedFundIndexes.length !== 0) await retryFailedFunds(failedFundIndexes,batch);
+        const remainingFailures = await retryFailedFunds(failedFunds, batch);
 
-        console.log(`Batch - ${batchNo} successfully inserted`);
+        if (remainingFailures.length === 0) {
+            console.log(`Batch - ${batchNo} successfully inserted`);
+        }
+
+        else{
+            console.log(`Batch - ${batchNo} completed with ${remainingFailures.length} failed funds`);
+        } 
+
 
     }
     catch(e){

@@ -11,13 +11,13 @@ async function retryFailedFunds(batch,failedFunds){
         
         while(retryCount<retryLimit && failedFunds.length !== 0){
             
-            let retryFunds = []; 
+            let failedFundPromises = []; 
 
-            failedFunds.forEach(fundHolder => {
-                retryFunds.push(wrap(computeAllReturns(fundHolder.fund),fundHolder.index));
+            failedFunds.forEach(failedFund => {
+                failedFundPromises.push(wrap(computeAllReturns(failedFund.fund),failedFund.index));
             });
 
-            const result = await Promise.all(retryFunds);
+            const result = await Promise.all(failedFundPromises);
 
             //Add all the failed funds again for re-processing.
             retryCount++;
@@ -41,7 +41,7 @@ async function retryFailedFunds(batch,failedFunds){
         }
 
         //If the fund still fails after 3 retries log it to the logger file.
-        await logReturnsError(failedFunds);
+        if(failedFunds.length !==0) await logReturnsError(failedFunds);
 
     }
 

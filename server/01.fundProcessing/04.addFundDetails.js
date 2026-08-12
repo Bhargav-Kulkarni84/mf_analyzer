@@ -5,17 +5,17 @@
 
 import axios from "axios";
 
-import {pool} from "./01.createPool.js";
+import {pool} from "../00.db/01.createPool.js";
 import {addMetaData} from "./04a.addMetaData.js";
 import {addNavData} from "./04b.addNavData.js";
 import {addProcessingStatus} from "./04c.addProcessingStatus.js";
-import {logError} from "../logger/00.logError.js"
+import {logError} from "../06.logger/00.logError.js"
 import {fetchFundData} from "./utils/04.fetchFundData.js"
 import {filterNav} from "./utils/05.filterNav.js"
 
 async function addFundDetails(fund){
     
-    //Create a seperate tcp connection to psql db. 
+    //Create a seperate tcp connection to psql db for transaction wrapping. 
     const client = await pool.connect();
 
     let transactionStarted = false;
@@ -30,7 +30,6 @@ async function addFundDetails(fund){
         
         //Check if the api is sending correct data.
         if(!res.data?.meta) throw new Error("Missing metadata");
-
         if(!res.data?.data) throw new Error("Missing NAV history");
 
         //Seperate the meta data and nav data from the fund.
@@ -77,9 +76,7 @@ async function addFundDetails(fund){
         }
 
         //Roll back on errors.
-        if(transactionStarted){
-            await client.query("ROLLBACK");
-        }
+        if(transactionStarted) await client.query("ROLLBACK");
 
         //Throw the error, to reach to the parent error handler.
         throw(e);

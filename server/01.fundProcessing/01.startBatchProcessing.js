@@ -1,5 +1,5 @@
-import { pool } from "./01.createPool.js";
-import { createBatch } from "./06.createBatch.js";
+import { pool } from "../00.db/01.createPool.js";
+import { createBatch } from "./02.createBatch.js";
 import { insertFunds } from "./03.insertFunds.js";
 
 async function startBatchProcessing(){

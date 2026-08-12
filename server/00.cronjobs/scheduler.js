@@ -1,4 +1,5 @@
 /* Scheduler call the data and return jobs. */
+import cron from 'node-cron'
 
 import {startBatchProcessing} from '../01.db/07.startBatchProcessing.js'
 import {startReturnsCalculation} from '../04.calculator/00.startReturnsCalculation.js'
@@ -6,7 +7,7 @@ import {startReturnsCalculation} from '../04.calculator/00.startReturnsCalculati
 let isRunning = false;
 
 // * * * * * * (sec | min | hr | day of month | month | day of week)
-cron.schedule("0 4 23 * * *", async ()=>{
+cron.schedule("0 55 19 * * *", async ()=>{
 
     console.log("CRON JOB Started Every Day at 2 AM");
 
@@ -16,7 +17,6 @@ cron.schedule("0 4 23 * * *", async ()=>{
     }
 
     try{
-
 
         isRunning = true;
 
@@ -42,7 +42,5 @@ cron.schedule("0 4 23 * * *", async ()=>{
         isRunning = false;
 
     }
-
-
 
 })
