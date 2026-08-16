@@ -4,6 +4,7 @@
 */
 
 import {pool} from '../00.db/01.createPool.js'
+import fs from 'fs/promises';
 
 async function logFailedFunds(rejectedFunds,batch){
 

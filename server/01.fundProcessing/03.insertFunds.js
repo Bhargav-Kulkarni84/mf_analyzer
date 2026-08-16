@@ -38,10 +38,6 @@ async function insertFunds(){
     catch(e){
         console.error(e);
     }
-
-    finally{
-        await pool.end();
-    }
     
 }
 

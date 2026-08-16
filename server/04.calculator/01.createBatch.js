@@ -1,4 +1,4 @@
-import {pool} from '../01.db/01.createPool.js' 
+import {pool} from '../00.db/01.createPool.js' 
 import { processBatch } from './02.processBatch.js';
 import AppError from '../03.errorHandlers/AppError.js';
 
@@ -23,7 +23,7 @@ async function createBatch(){
         WHERE fps.is_active = TRUE
         AND(
             fps.last_returns_calculated is NULL 
-            OR fps.last_returns_calculated < fps.last_data_download - INTERVAL '30 days');`
+            OR fps.last_returns_calculated < fps.last_data_download);`
         )
 
     const funds = result.rows;

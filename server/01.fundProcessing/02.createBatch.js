@@ -51,7 +51,7 @@ async function createBatch(funds){
 
     try{
         result = await pool.query(`SELECT COUNT(*) AS count FROM fund_processing_status WHERE retry_count = 3`);
-        failedFunds = Number(failedResult.rows[0].count);
+        failedFunds = Number(result.rows[0].count);
     }
     catch(e){
         console.log("Couldn't get the funds for which the processing failed, assuming it to be 0");
@@ -59,7 +59,7 @@ async function createBatch(funds){
     }
     
     const total = funds.length;    
-    const successful = total - failed;
+    const successful = total - failedFunds;
     
     //b.Compute total time taken.
     let endTime = Date.now();
@@ -67,7 +67,7 @@ async function createBatch(funds){
 
     console.log(`Total Funds : ${total}\n`);
     console.log(`SuccessfulFunds : ${successful}\n`);
-    console.log(`Failed : ${failed}\n`);
+    console.log(`Failed : ${failedFunds}\n`);
     console.log(`Success Rate : ${(successful/total)*100}%\n`);
     console.log(`Time Taken : ${timeTaken} hrs\n or (${timeTaken*60} min) `);
 

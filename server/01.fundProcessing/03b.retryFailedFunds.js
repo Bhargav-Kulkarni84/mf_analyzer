@@ -28,12 +28,12 @@ async function retryFailedFunds(failedFunds,batch){
         //wait for 5 seconds before making a retry request;
         console.log("Retrying...");
 
-        //Do linear backoff.
-        await wait(5000 * retryCount);
-
         //Increment the retry limit counter.
         // console.log(`Retry #${retryCount+1} for ${failedFundIndexes.length} batch`);
         retryCount++;
+        
+        //Do linear backoff.
+        await wait(5000 * retryCount);
 
         //Loop through each index of failed fund and add it to the fundBatchPromises array.
         failedFunds.forEach((failedFund) => {

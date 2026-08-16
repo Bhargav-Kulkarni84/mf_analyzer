@@ -1,6 +1,6 @@
-import { wrap } from "../01.db/utils/03.wrap.js";
+import { wrap } from "../01.fundProcessing/utils/03.wrap.js";
 import AppError from "../03.errorHandlers/AppError.js";
-import {logReturnsError} from '../06.logger/04.logReturnsError.js'
+import {logReturnsError} from '../06.logger/03.logReturnsError.js'
 import { computeAllReturns } from "./03.computeAllReturns.js";
 
 async function retryFailedFunds(batch,failedFunds){
@@ -10,6 +10,12 @@ async function retryFailedFunds(batch,failedFunds){
         let retryCount = 0;
         
         while(retryCount<retryLimit && failedFunds.length !== 0){
+
+            //Increment the retry limit counter.
+            retryCount++;
+            
+            //Do linear backoff.
+            await wait(5000 * retryCount);
             
             let failedFundPromises = []; 
 

@@ -1,4 +1,4 @@
-import { pool } from "../../01.db/01.createPool.js";
+import { pool } from "../../00.db/01.createPool.js";
 import AppError from "../../03.errorHandlers/AppError.js";
 
 async function updateDB(fund_id,min,max,avg,rollingPeriod,dataPoints){
