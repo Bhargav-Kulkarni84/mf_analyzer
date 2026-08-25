@@ -23,8 +23,8 @@ async function computeRollingReturns(fund){
     ))
 
     let startDate = new Date(nav_history[0].date).getFullYear();
-    let endDate =  new Date(nav_history[nav_history.length-1].date).getFullYear();
-    let maxRollingYear = (endDate - startDate) ;
+    let endDate = new Date(nav_history[nav_history.length - 1].date).getFullYear();
+    let maxRollingYear = endDate - startDate;
 
     //Compute Rolling returns for every available year.
     for(let rollingPeriod=1; rollingPeriod<=maxRollingYear; rollingPeriod++){

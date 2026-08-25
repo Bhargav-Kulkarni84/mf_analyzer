@@ -49,7 +49,7 @@ const fund_master = `CREATE TABLE IF NOT EXISTS fund_master(
 const nav_history = `CREATE TABLE IF NOT EXISTS nav_history(
 
     fund_id INTEGER NOT NULL,
-    date DATE NOT NULL,
+    nav_date DATE NOT NULL,
     nav NUMERIC NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
 

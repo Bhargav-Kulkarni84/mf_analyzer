@@ -1,10 +1,11 @@
-//Binary Search to find the next greater or eqaul element.
-//smallest element greater than current nav
+//Binary Search to Find the LAST date <= targetTime
 function getNav(nav_history,currDate,rollingYear){
-        
+    
+    //Move rolling years back from the current date.
     let rollingDate = new Date(currDate);
     rollingDate.setFullYear(rollingDate.getFullYear()-rollingYear)
 
+    //Convert the rolling date to time stamp.
     const targetTime = rollingDate.getTime();
 
     let start = 0;
@@ -15,21 +16,22 @@ function getNav(nav_history,currDate,rollingYear){
 
         let mid = Math.floor((start + end) / 2);    
 
-        if(nav_history[mid].time >= targetTime){
+        if(nav_history[mid].time <= targetTime){
             ans = mid;
-            end = mid-1;
+            start = mid + 1;
         }
         else{
-            start = mid+1;
+            end = mid - 1;
         } 
 
     }
 
     if (ans === -1) return null;
 
+    //Convert 7 days to timestamps
     const sevenDays = 7 * 24 * 60 * 60 * 1000;
 
-    if (nav_history[ans].time - targetTime > sevenDays) return null;
+    if (targetTime - nav_history[ans].time > sevenDays) return null;
 
     return nav_history[ans].nav;
     

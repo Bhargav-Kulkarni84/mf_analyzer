@@ -43,7 +43,16 @@ async function createBatch(){
 
         const batch = funds.slice(i,i+batchSize);
         console.log(`Processing batch - ${batchCount} / ${batches}`);
-        await processBatch(batchCount,batch);
+
+        try{
+            await processBatch(batchCount,batch);
+        }
+        catch(e){
+            console.log(`ERROR PROCESSSING RETURNS CALCULATION FOR FUND WITH SCHEME CODE ${funds[i].scheme_code}`);
+            console.log(`${e}`);
+            console.log(`Reason : ${e.messsage}`);
+        }
+
         batchCount++;
 
     }

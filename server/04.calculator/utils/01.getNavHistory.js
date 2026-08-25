@@ -12,7 +12,17 @@ async function getNavHistory(fund_id){
             ORDER BY nav_date ASC ;`
     ,[fund_id]);
     
-    return result.rows;
+    const nav_history = result.rows;
+
+    //Validate the nav history (Remove all negative and zero nav entries);
+    const validNavHistory = nav_history
+                            .map(row => ({
+                                nav : Number(row.nav),
+                                date : row.nav_date,
+                            }))
+                            .filter(row => Number.isFinite(row.nav) && row.nav > 0);
+
+    return validNavHistory;
 
 }
 

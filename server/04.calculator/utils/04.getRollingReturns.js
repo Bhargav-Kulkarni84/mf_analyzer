@@ -20,15 +20,19 @@ async function getRollingReturns(fund_id,scheme_code,nav_history,rollingYear){
         
         //For current fund store the current nav and date.
         const { nav: currNav, date: currNavDate } = navEntry;
+
+        //Exclude invalid nav's
+        if (!Number.isFinite(currNav) || currNav <= 0) continue;
         
         //Get the nav after rolling years.
         let oldNav = getNav(nav_history,currNavDate,rollingYear);
         
         //If no nav exist corresponding to current date, continue.
-        if(oldNav === null) continue;
+        if (oldNav === null || !Number.isFinite(oldNav) || oldNav <= 0) continue;
         
         //Compute the CAGR n years.
         let currCAGR = getCAGR(currNav,oldNav,rollingYear); 
+        if (!Number.isFinite(currCAGR) || currCAGR === null) continue;
         
         //Store the max and min CAGR values of all funds.
         maxCAGR = Math.max(currCAGR,maxCAGR);
@@ -40,13 +44,7 @@ async function getRollingReturns(fund_id,scheme_code,nav_history,rollingYear){
         
     };
 
-    if (dataPoints === 0) {
-        // throw new AppError(
-        //     `Insufficient NAV history for ${rollingYear}-year rolling returns.`,
-        //     400
-        // );
-        return null;
-    }
+    if (dataPoints === 0) return null;
 
     const avgRollingCAGR = rollingCAGR/dataPoints;
     

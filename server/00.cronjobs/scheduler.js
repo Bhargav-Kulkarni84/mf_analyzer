@@ -7,7 +7,7 @@ import {startReturnsCalculation} from '../04.calculator/00.startReturnsCalculati
 let isRunning = false;
 
 // * * * * * * (sec | min | hr | day of month | month | day of week)
-cron.schedule("0 36 22 * * *", async ()=>{
+cron.schedule("0 38 22 * * *", async ()=>{
 
         console.log("CRON JOB Started Every Day at 2 AM");
 

@@ -20,9 +20,13 @@ async function startReturnsCalculation(){
     catch(e){
         console.log("ERROR PROCESSSING RETURNS CALCULATION");
         console.log(`Reason + ${e.messsage}`);
+        console.log(`${e}`);
     }
 
 
 } 
+
+await startReturnsCalculation();
+
 
 export {startReturnsCalculation}

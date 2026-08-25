@@ -1,10 +1,16 @@
 //This piece of code get all the funds from MF API's and adds to the fund_master table in mfdb database if there exists no prior fund.
 
+import 'dotenv/config';
 import axios from 'axios';
 import {pool} from "../00.db/01.createPool.js";
-import 'dotenv/config';
 
 const MF_API_KEY = process.env.MF_API_KEY;
+
+import 'dotenv/config';
+
+console.log("MF_API_KEY:", process.env.MF_API_KEY);
+console.log("CHUNK_SIZE:", process.env.CHUNK_SIZE);
+console.log("DB_PASSWORD exists:", !!process.env.DB_PASSWORD);
 
 async function insertFunds(){
 
